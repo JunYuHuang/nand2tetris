@@ -15,7 +15,7 @@ single-bit inputs
 
 ## Notes
 
-- `Nand` gate specs:
+- `Nand` gate:
   ```
   Chip Name: Nand
   Input:     a, b
@@ -30,7 +30,7 @@ single-bit inputs
   1 | 1 | 0
   ```
 
-- `Not` gate specs:
+- `Not` gate:
   ```
   Chip Name: Not
   Input:     in
@@ -42,6 +42,108 @@ single-bit inputs
   0  | 1
   1  | 0
   ```
+  - Not(a) = Nand(a, a)
+
+- `And` gate:
+  ```
+  Chip Name: And
+  Input:     a, b
+  Output:    out
+  Function:  if ((a==1) and (b==1)) then out = 1, else out = 0
+
+  a | b | And(a, b)
+  --|---|-----------
+  0 | 0 | 0
+  0 | 1 | 0
+  1 | 0 | 0
+  1 | 1 | 1
+  ```
+  - And(a, b) = Not(Nand(a, b))
+
+- `Or` gate:
+  ```
+  Chip Name: Or
+  Input:     a, b
+  Output:    out
+  Function:  if ((a==0) and (b==0)) then out = 0, else out = 1
+
+  a | b | Or(a, b)
+  --|---|-----------
+  0 | 0 | 0
+  0 | 1 | 1
+  1 | 0 | 1
+  1 | 1 | 1
+
+    a || b
+  = ~~(a || b)
+  = ~(~a & ~b)
+
+  a -> NOT -+
+            +-> AND -> NOT -> out
+  b -> NOT -+
+  ```
+  - Or(a, b) = Not(And(Not(a), Not(b)))
+
+- `Xor` gate:
+  ```
+  Chip Name: Xor
+  Input:     a, b
+  Output:    out
+  Function:  if (a!=b) then out = 1, else out = 0
+
+  a | b | Xor(a, b)
+  --|---|-----------
+  0 | 0 | 0
+  0 | 1 | 1
+  1 | 0 | 1
+  1 | 1 | 0
+
+    a ⊕ b
+  = (~a & b) || (a & ~b)
+
+  a -> NOT -+
+    |       +-> AND -+
+    +-------+        +-> OR -> out
+    |       +-> AND -+
+  b -> NOT -+
+  ```
+  - Xor(a, b) = Or(And(Not(a), b), And(a, Not(b)))
+
+- `Mux` gate:
+  ```
+  Chip Name: Mux
+  Input:     a, b, sel
+  Output:    out
+  Function:  if (sel==0) then out = a, else out = b
+
+  a | b | sel | out
+  --|---|-----|-----
+  0 | 0 | 0   | 0
+  0 | 1 | 0   | 0
+  1 | 0 | 0   | 1
+  1 | 1 | 0   | 1
+  0 | 0 | 1   | 0
+  0 | 1 | 1   | 1
+  1 | 0 | 1   | 0
+  1 | 1 | 1   | 1
+
+  sel | out
+  ----|-----
+  0   | a
+  1   | b
+
+  todo
+  ```
+  - Mux(a, b, sel) = ?
+
+
+## How To Test
+
+Run the hardware simulator script against the test script for the chip. Example for testing the `Not.hdl` chip / gate:
+```
+cd nand2tetris/tools
+sh HardwareSimulator.sh ../projects/1/Not.tst
+```
 
 ## Todos
 
@@ -52,13 +154,13 @@ Complete all HDL program implementations for all 15 logic gates / chips in chapt
 3. [ ] `DMux`
 4. [ ] `Dmux4Way`
 5. [ ] `Dmux8Way`
-6. [ ] `Mux`
+6. [ ] `Mux` (WIP)
 7. [ ] `Mux4Way16`
 8. [ ] `Mux8Way16`
 9. [ ] `Mux16`
 10. [x] `Not`
 11. [ ] `Not16`
-12. [ ] `Or`
+12. [x] `Or`
 13. [ ] `Or8Way`
 14. [ ] `Or16`
-15. [ ] `Xor`
+15. [x] `Xor`
