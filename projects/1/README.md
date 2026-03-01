@@ -132,16 +132,13 @@ single-bit inputs
   1 | 0 | 1   | 0
   1 | 1 | 1   | 1
   ```
-  - Mux(a, b, sel) = Or(
-      Or(
-        And(And(a, Not(b)), Not(sel)),
-        And(And(a, b), Not(sel)),
-      ),
-      Or(
-        And(And(Not(a), b), sel),
-        And(And(a, b), sel)
-      )
-    )
+  - Mux(a, b, sel) = (
+    (a & ~b & ~sel) | (a & b & ~sel) | (~a & b & sel) | 
+    (a & b & sel)
+  )
+  - F = a & ~sel & (~b | b) | b & sel (~a & a)
+  - F = a & ~sel (1) | b & sel (1)
+  - F = (a & ~sel) | (b & sel)
 
 ## How To Test
 
@@ -160,7 +157,7 @@ Complete all HDL program implementations for all 15 logic gates / chips in chapt
 3. [ ] `DMux`
 4. [ ] `Dmux4Way`
 5. [ ] `Dmux8Way`
-6. [x] `Mux` (works but design is bad?)
+6. [x] `Mux`
 7. [ ] `Mux4Way16`
 8. [ ] `Mux8Way16`
 9. [ ] `Mux16`

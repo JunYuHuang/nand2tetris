@@ -34,6 +34,7 @@ A + (B · C) = (A + B) · (A + C)
 ABSORPTION Laws: One term makes the other redundant
 A + (A · B) = A
 A · (A + B) = A
+A + (¬A · B) = A + B
 
 DE MORGAN Laws: How NOT interacts with AND / OR
 ¬(A · B) = ¬A + ¬B
