@@ -11,5 +11,28 @@ CHIP Mux {
     OUT out;
 
     PARTS:
-    //// Replace this comment with your code.
+    Not(in=a, out=notA);
+    Not(in=b, out=notB);
+    Not(in=sel, out=notSel);
+
+    // Case 1: a . (~b . ~sel)
+    And(a=notB, b=notSel, out=blockB1);
+    And(a=a, b=blockB1, out=keepA1);
+
+    // Case 2: a . (b . ~sel)
+    And(a=b, b=notSel, out=blockB2);
+    And(a=a, b=blockB2, out=keepA2);
+
+    // Case 3: b . (~a . sel)
+    And(a=notA, b=sel, out=blockA1);
+    And(a=b, b=blockA1, out=keepB1);
+
+    // Case 4: b . (a . sel)
+    And(a=a, b=sel, out=blockA2);
+    And(a=b, b=blockA2, out=keepB2);
+
+    // Join all 4 cases together with OR
+    Or(a=keepA1, b=keepA2, out=keepAs);
+    Or(a=keepB1, b=keepB2, out=keepBs);
+    Or(a=keepAs, b=keepBs, out=out);
 }

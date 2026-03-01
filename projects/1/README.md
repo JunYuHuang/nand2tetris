@@ -116,6 +116,11 @@ single-bit inputs
   Output:    out
   Function:  if (sel==0) then out = a, else out = b
 
+  sel | out
+  ----|-----
+  0   | a
+  1   | b
+
   a | b | sel | out
   --|---|-----|-----
   0 | 0 | 0   | 0
@@ -126,20 +131,21 @@ single-bit inputs
   0 | 1 | 1   | 1
   1 | 0 | 1   | 0
   1 | 1 | 1   | 1
-
-  sel | out
-  ----|-----
-  0   | a
-  1   | b
-
-  todo
   ```
-  - Mux(a, b, sel) = ?
-
+  - Mux(a, b, sel) = Or(
+      Or(
+        And(And(a, Not(b)), Not(sel)),
+        And(And(a, b), Not(sel)),
+      ),
+      Or(
+        And(And(Not(a), b), sel),
+        And(And(a, b), sel)
+      )
+    )
 
 ## How To Test
 
-Run the hardware simulator script against the test script for the chip. Example for testing the `Not.hdl` chip / gate:
+Run the hardware simulator script against the test script for the chip. Example for testing the `Not.hdl` chip / gate in a Linux Bash terminal:
 ```
 cd nand2tetris/tools
 sh HardwareSimulator.sh ../projects/1/Not.tst
@@ -154,7 +160,7 @@ Complete all HDL program implementations for all 15 logic gates / chips in chapt
 3. [ ] `DMux`
 4. [ ] `Dmux4Way`
 5. [ ] `Dmux8Way`
-6. [ ] `Mux` (WIP)
+6. [x] `Mux` (works but design is bad?)
 7. [ ] `Mux4Way16`
 8. [ ] `Mux8Way16`
 9. [ ] `Mux16`
