@@ -1,5 +1,25 @@
 # Project 1
 
+## Todos
+
+Complete all HDL program implementations for all 15 logic gates or chips (excluding `NAND`) in chapter 1:
+
+- [x] `Not`
+- [x] `And`
+- [x] `Or`
+- [x] `Xor`
+- [x] `Mux`
+- [x] `DMux`
+- [ ] `And16`
+- [ ] `Dmux4Way`
+- [ ] `Dmux8Way`
+- [ ] `Mux4Way16`
+- [ ] `Mux8Way16`
+- [ ] `Mux16`
+- [ ] `Not16`
+- [ ] `Or8Way`
+- [ ] `Or16`
+
 ## Tips
 
 - `Nand`: can skip
@@ -140,6 +160,31 @@ single-bit inputs
   - F = a & ~sel (1) | b & sel (1)
   - F = (a & ~sel) | (b & sel)
 
+- `DMux` gate:
+  ```
+  Chip Name: DMux
+  Input:     in, sel
+  Output:    a, b
+  Function:  if (sel==0) then {a, b} = {in, 0},
+             else             {a, b} = {0, in}
+
+  in | sel | a | b
+  ---+-----+---+---
+  0  | 0   | 0 | 0
+  1  | 0   | 1 | 0
+  0  | 1   | 0 | 0
+  1  | 1   | 0 | 1
+
+  sel | a  | b
+  ----+----+----
+  0   | in | 0
+  1   | 0  | in
+
+  DMux(in, sel) = 
+    a = in & ~sel
+    b = in & sel
+  ``` 
+
 ## How To Test
 
 Run the hardware simulator script against the test script for the chip. Example for testing the `Not.hdl` chip / gate in a Linux Bash terminal:
@@ -148,22 +193,3 @@ cd nand2tetris/tools
 sh HardwareSimulator.sh ../projects/1/Not.tst
 ```
 
-## Todos
-
-Complete all HDL program implementations for all 15 logic gates / chips in chapter 1:
-
-1. [x] `And`
-2. [ ] `And16`
-3. [ ] `DMux`
-4. [ ] `Dmux4Way`
-5. [ ] `Dmux8Way`
-6. [x] `Mux`
-7. [ ] `Mux4Way16`
-8. [ ] `Mux8Way16`
-9. [ ] `Mux16`
-10. [x] `Not`
-11. [ ] `Not16`
-12. [x] `Or`
-13. [ ] `Or8Way`
-14. [ ] `Or16`
-15. [x] `Xor`
