@@ -13,8 +13,8 @@ Complete all HDL program implementations for all 15 logic gates or chips (exclud
 - [x] `Not16`
 - [x] `And16`
 - [x] `Or16`
-- [ ] `Mux16`
-- [ ] `Or8Way`
+- [x] `Mux16`
+- [ ] `Or8Way` (WIP)
 - [ ] `Mux4Way16`
 - [ ] `Mux8Way16`
 - [ ] `Dmux4Way`
@@ -193,6 +193,14 @@ single-bit inputs
   Function:  for i = 0..15 out[i] = Not(in[i])
 
   Not16(a, b, ..., p) = apply Not() gate to all 16 input bits
+  ```
+
+- `Or8Way` gate:
+  ```
+  Chip Name: Or8Way
+  Input:     in[8]
+  Output:    out
+  Function:  out = Or(in[0], in[1], ..., in[7])
   ```
 
 ## How To Test
