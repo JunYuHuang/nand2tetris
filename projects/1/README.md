@@ -14,7 +14,7 @@ Complete all HDL program implementations for all 15 logic gates or chips (exclud
 - [x] `And16`
 - [x] `Or16`
 - [x] `Mux16`
-- [ ] `Or8Way` (WIP)
+- [x] `Or8Way`
 - [ ] `Mux4Way16`
 - [ ] `Mux8Way16`
 - [ ] `Dmux4Way`
@@ -201,6 +201,8 @@ single-bit inputs
   Input:     in[8]
   Output:    out
   Function:  out = Or(in[0], in[1], ..., in[7])
+
+  TODO
   ```
 
 ## How To Test
