@@ -15,7 +15,7 @@ Complete all HDL program implementations for all 15 logic gates or chips (exclud
 - [x] `Or16`
 - [x] `Mux16`
 - [x] `Or8Way`
-- [ ] `Mux4Way16`
+- [x] `Mux4Way16`
 - [ ] `Mux8Way16`
 - [ ] `Dmux4Way`
 - [ ] `Dmux8Way`
@@ -201,8 +201,24 @@ single-bit inputs
   Input:     in[8]
   Output:    out
   Function:  out = Or(in[0], in[1], ..., in[7])
+  ```
 
-  TODO
+- `Mux4Way16` gate:
+  ```
+  Chip Name: Mux4Way16
+  Input:     a[16], b[16], c[16], d[16], sel[2]
+  Output:    out[16]
+  Function:  if (sel==00,01,10, or 11) then out = a,b,c, or d
+  Comment:   The assignment is a 16-bit operation.
+             For example, "out = a" means "for i = 0..15 out[i] = a[i]".
+
+   sel[1] | sel[0] | out
+  --------+--------+-----
+   0      | 0      | a
+   0      | 1      | b
+   1      | 0      | c
+   1      | 1      | d
+
   ```
 
 ## How To Test
