@@ -16,7 +16,7 @@ Complete all HDL program implementations for all 15 logic gates or chips (exclud
 - [x] `Mux16`
 - [x] `Or8Way`
 - [x] `Mux4Way16`
-- [ ] `Mux8Way16` (WIP)
+- [x] `Mux8Way16`
 - [ ] `Dmux4Way`
 - [ ] `Dmux8Way`
 
@@ -242,7 +242,23 @@ single-bit inputs
    1      | 1      | 1      | h
 
   ```
-  - bugged HDL logic
+  - N-way multiplexor gates rules:
+    - at each level, the inputs pair must differ only in the selector bit used at that level
+    - selector bit order determines how inputs must be grouped
+  - general multiplexor tree rule:
+    - for an N-way mux with k selector bits:
+      - inputs = 2^k
+      - levels = k
+    - must use selector bit `sel[i]` at level `i`
+    - each level halves the number of signals
+  - N-way mux is a binary decision tree e.g.,
+    ```
+             sel[2]
+           /        \
+       sel[1]      sel[1]
+       /    \      /    \
+    sel[0] sel[0] sel[0] sel[0]
+    ```
 
 ## How To Test
 
@@ -251,4 +267,3 @@ Run the hardware simulator script against the test script for the chip. Example 
 cd nand2tetris/tools
 sh HardwareSimulator.sh ../projects/1/Not.tst
 ```
-
