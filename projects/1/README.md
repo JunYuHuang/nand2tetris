@@ -18,7 +18,7 @@ Complete all HDL program implementations for all 15 logic gates or chips (exclud
 - [x] `Mux4Way16`
 - [x] `Mux8Way16`
 - [x] `DMux4Way`
-- [ ] `DMux8Way`
+- [x] `DMux8Way`
 
 ## Tips
 
@@ -262,7 +262,27 @@ single-bit inputs
 
 - `DMux4Way` gate
 
-- `DMux8Way` gate
+- `DMux8Way` gate:
+  ```
+  8-way demultiplexor:
+  [a, b, c, d, e, f, g, h] = [in, 0,  0,  0,  0,  0,  0,  0] if sel = 000
+                             [0, in,  0,  0,  0,  0,  0,  0] if sel = 001
+                             [0,  0, in,  0,  0,  0,  0,  0] if sel = 010
+                             [0,  0,  0, in,  0,  0,  0,  0] if sel = 011
+                             [0,  0,  0,  0, in,  0,  0,  0] if sel = 100
+                             [0,  0,  0,  0,  0, in,  0,  0] if sel = 101
+                             [0,  0,  0,  0,  0,  0, in,  0] if sel = 110
+                             [0,  0,  0,  0,  0,  0,  0, in] if sel = 111
+
+  a = in & ~sel[2] & ~sel[1] & ~sel[0]
+  b = in & ~sel[2] & ~sel[1] & sel[0]
+  c = in & ~sel[2] & sel[1] & ~sel[0]
+  d = in & ~sel[2] & sel[1] & sel[0]
+  e = in & sel[2] & ~sel[1] & ~sel[0]
+  f = in & sel[2] & ~sel[1] & sel[0]
+  g = in & sel[2] & sel[1] & ~sel[0]
+  h = in & sel[2] & sel[1] & sel[0]
+  ```
 
 ## How To Test
 
