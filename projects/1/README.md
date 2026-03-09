@@ -17,8 +17,8 @@ Complete all HDL program implementations for all 15 logic gates or chips (exclud
 - [x] `Or8Way`
 - [x] `Mux4Way16`
 - [x] `Mux8Way16`
-- [ ] `Dmux4Way`
-- [ ] `Dmux8Way`
+- [x] `DMux4Way`
+- [ ] `DMux8Way`
 
 ## Tips
 
@@ -259,6 +259,10 @@ single-bit inputs
        /    \      /    \
     sel[0] sel[0] sel[0] sel[0]
     ```
+
+- `DMux4Way` gate
+
+- `DMux8Way` gate
 
 ## How To Test
 
