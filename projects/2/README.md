@@ -4,7 +4,7 @@
 
 Complete all HDL program implementations for all 6 logic gates or chips in chapter 2:
 
-- [ ] `HalfAdder`
+- [x] `HalfAdder`
 - [ ] `FullAdder`
 - [ ] `Add16`
 - [ ] `Inc16`
@@ -21,9 +21,32 @@ sh HardwareSimulator.sh ../projects/1/Not.tst
 
 ## Notes
 
-- Half-adder:
-- Full-adder:
-- Adder: 
-- Incrementer:
-- ALU: 
+- `HalfAdder` gate: add 2 bits together
+  ```
+  inputs        outputs
+    a  |  b  | carry | sum 
+  -----+-----+-------+-----
+  0    | 0   | 0     | 0
+  0    | 1   | 0     | 1
+  1    | 0   | 0     | 1
+  1    | 1   | 1     | 0
 
+  Chip name: HalfAdder
+  Input:     a, b
+  Output:    sum, carry
+  Function:  sum   = LSB of a + b
+             carry = MSB of a + b
+
+  carry = a & b
+  sum = a XOR b
+  ```
+
+- `FullAdder` gate: add 3 bits together
+  ```
+  TODO
+  ```
+
+- `Add16` gate
+- `Inc16` gate
+- `ALU-basic` gate
+- `ALU` gate
