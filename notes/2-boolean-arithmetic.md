@@ -1,3 +1,8 @@
 # 2. Boolean Arithmetic
 
-TODO
+- Mental shortcuts:
+  ```
+  FullAdder
+  sum   = XOR parity
+  carry = majority of inputs
+  ```

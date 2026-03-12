@@ -6,7 +6,7 @@ Complete all HDL program implementations for all 6 logic gates or chips in chapt
 
 - [x] `HalfAdder`
 - [x] `FullAdder`
-- [ ] `Add16`
+- [x] `Add16`
 - [ ] `Inc16`
 - [ ] `ALU-basic`
 - [ ] `ALU`
@@ -65,6 +65,16 @@ sh HardwareSimulator.sh ../projects/1/Not.tst
   ```
 
 - `Add16` gate
+  ```
+  Chip Name: Add16
+  Input:     a[16], b[16]
+  Output:    out[16]
+  Function:  Adds two 16-bit numbers.
+             The overflow bit is ignored.
+
+  ```
+  - chain 1 `HalfAdder` with 15 following `FullAdder` gates
+
 - `Inc16` gate
 - `ALU-basic` gate
 - `ALU` gate
