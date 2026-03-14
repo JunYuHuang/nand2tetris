@@ -6,3 +6,5 @@
   sum   = XOR parity
   carry = majority of inputs
   ```
+- bit-slice pattern
+  - todo

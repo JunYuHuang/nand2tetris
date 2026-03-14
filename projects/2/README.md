@@ -8,8 +8,9 @@ Complete all HDL program implementations for all 6 logic gates or chips in chapt
 - [x] `FullAdder`
 - [x] `Add16`
 - [x] `Inc16`
-- [ ] `ALU-basic`
 - [ ] `ALU`
+  - [x] pass `ALU-basic.tst` tests
+  - [ ] pass `ALU.tst` tests
 
 ## How To Test
 
@@ -85,5 +86,39 @@ sh HardwareSimulator.sh ../projects/1/Not.tst
   ```
   - 16 chained `HalfAdder` gates that is intially fed by `in[0]` and the 1 constant (i.e., `true`)
 
-- `ALU-basic` gate
-- `ALU` gate
+- `ALU-gate` gate
+  ```
+  Chip Name: ALU
+  Input:     x[16], y[16],  // Two 16-bit data inputs
+             zx,            // Zero the x input
+             nx,            // Negate the x input
+             zy,            // Zero the y input
+             ny,            // Negate the y input
+             f,             // if f==1 out=add(x,y) else out=and(x,y)
+             no,            // Negate the out output
+  Output:    out[16],       // 16-bit output
+             zr,            // if out==0 zr=1 else zr=0
+             ng             // if out<0  ng=1 else ng=0
+  Function:
+             if zx x=0      // 16-bit zero constant
+             if nx x=!x     // Bit-wise negation
+             if zy y=0      // 16-bit zero constant
+             if ny y=!y     // Bit-wise negation
+             if f out=x+y   // Integer two's complement addition
+             else out=x&y   // Bit-wise And
+             if no out=!out // Bit-wise negation
+             if out==0 zr=1 else zr=0 // 16-bit equality comparison
+             if out<0 ng=1  else ng=0 // two's complement comparison
+  Comment:   The overflow bit is ignored.
+  ```
+  - possibly useful chips:
+    - `And16`
+    - `Mux16`
+    - `Not16`
+    - `Or16`
+    - `Add16`
+    - `Inc16`
+  - Zero Function = x & ~zx
+  - Not Function = (~x & nx) v (x & ~nx)
+  - And Function = x & y
+  - Add Function = x ADD y
