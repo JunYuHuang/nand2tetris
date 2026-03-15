@@ -2,15 +2,15 @@
 
 ## Todos
 
-Complete all HDL program implementations for all 6 logic gates or chips in chapter 2:
+Complete all HDL program implementations for all 5 logic gates or chips in chapter 2:
 
 - [x] `HalfAdder`
 - [x] `FullAdder`
 - [x] `Add16`
 - [x] `Inc16`
-- [ ] `ALU`
+- [x] `ALU`
   - [x] pass `ALU-basic.tst` tests
-  - [ ] pass `ALU.tst` tests
+  - [x] pass `ALU.tst` tests
 
 ## How To Test
 
@@ -122,3 +122,12 @@ sh HardwareSimulator.sh ../projects/1/Not.tst
   - Not Function = (~x & nx) v (x & ~nx)
   - And Function = x & y
   - Add Function = x ADD y
+  - how to determine if `out[16]` equals 0 or not:
+    - run `Or` gate on all 16 bits of `out[16]`
+      - if the result is `0`, then `out[16]` equals 0
+      - `zr` output bit is the inverse or negation of the result
+  - how to determine if `out[16]` is less than 0 or not for the `ng` output bit:
+    - for two's complement binary numbers:
+      - leftmost bit (i.e., the Most-Significant Bit (MSB)) determine if it's negative or not
+        - MSB == 1, -> negative number
+        - MSB == 0, -> non-negative number
