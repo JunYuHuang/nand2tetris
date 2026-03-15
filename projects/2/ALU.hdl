@@ -54,16 +54,13 @@ CHIP ALU {
     Add16(a=moddedX, b=moddedY, out=xAddY);
     Mux16(a=xAndY, b=xAddY, sel=f, out=xyResult);
 
-    // Optionally postprocess the result
+    // Optionally postprocess the result and output `ng` negative bit
     Not16(in=xyResult, out=notXYResult);
-    Mux16(a=xyResult, b=notXYResult, sel=no, out=out, out[0]=out0, out[1]=out1, out[2]=out2, out[3]=out3, out[4]=out4, out[5]=out5, out[6]=out6, out[7]=out7, out[8]=out8, out[9]=out9, out[10]=out10, out[11]=out11, out[12]=out12, out[13]=out13, out[14]=out14, out[15]=out15);
+    Mux16(a=xyResult, b=notXYResult, sel=no, out=out, out[0..7]=outHalf1, out[8..15]=outHalf2, out[15]=ng);
 
     // Compute `zr` zero bit output
-    Or8Way(in[0]=out0, in[1]=out1, in[2]=out2, in[3]=out3, in[4]=out4, in[5]=out5, in[6]=out6, in[7]=out7, out=outHalf1Or);
-    Or8Way(in[0]=out8, in[1]=out9, in[2]=out10, in[3]=out11, in[4]=out12, in[5]=out13, in[6]=out14, in[7]=out15, out=outHalf2Or);
+    Or8Way(in=outHalf1, out=outHalf1Or);
+    Or8Way(in=outHalf2, out=outHalf2Or);
     Or(a=outHalf1Or, b=outHalf2Or, out=outOr);
     Not(in=outOr, out=zr);
-
-    // Compute `ng` negative bit output
-    And(a=out15, b=out15, out=ng);
 }
