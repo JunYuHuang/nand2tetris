@@ -4,7 +4,7 @@
 
 Complete all HDL program implementations for all 8 logic gates or chips in chapter 3:
 
-- [ ] `Bit`
+- [x] `Bit`
 - [ ] `Register`
 - [ ] `RAM8`
 - [ ] `RAM64`
