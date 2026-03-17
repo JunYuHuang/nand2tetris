@@ -5,7 +5,7 @@
 Complete all HDL program implementations for all 8 logic gates or chips in chapter 3:
 
 - [x] `Bit`
-- [ ] `Register`
+- [x] `Register`
 - [ ] `RAM8`
 - [ ] `RAM64`
 - [ ] `RAM512`
@@ -24,4 +24,6 @@ sh HardwareSimulator.sh ../projects/1/Not.tst
 ## Notes
 
 - `Bit` chip:
+  - TODO
+- `Register` chip:
   - TODO
