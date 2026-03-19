@@ -10,7 +10,7 @@ Complete all HDL program implementations for all 8 logic gates or chips in chapt
 - [x] `RAM64`
 - [x] `RAM512`
 - [x] `RAM4K`
-- [ ] `RAM16K`
+- [x] `RAM16K`
 - [ ] `PC`
 
 ## How To Test
@@ -58,17 +58,26 @@ sh HardwareSimulator.sh ../projects/1/Not.tst
 - `RAM512` chip:
   - same pattern as `RAM8`, but input `address` is 9-bits instead of 3-bits
   - map higher bits (indices 6 to 8) of `address` to `DMux8Way`'s `sel` input bit
-  - map lower bits (indices 0 to 5) of `address` to the individual `address` input bits of the 8 `RAM8` chips
+  - map lower bits (indices 0 to 5) of `address` to the individual `address` input bits of the 8 `RAM64` chips
   - components:
     - 8 x `RAM64` chips for storing the 16-bit values
     - 1 x `DMux`-variant chip for storing a value at register `address` if `load` is 1
     - 1 x `Mux`-variant chip for reading the value at register `address` if `load` is 0
 
 - `RAM4K` chip:
-  - same pattern as `RAM8`, but input `address` is 9-bits instead of 3-bits
+  - same pattern as `RAM8`, but input `address` is 12-bits instead of 3-bits
   - map higher bits (indices 9 to 11) of `address` to `DMux8Way`'s `sel` input bit
-  - map lower bits (indices 0 to 8) of `address` to the individual `address` input bits of the 8 `RAM8` chips
+  - map lower bits (indices 0 to 8) of `address` to the individual `address` input bits of the 8 `RAM512` chips
   - components:
     - 8 x `RAM512` chips for storing the 16-bit values
+    - 1 x `DMux`-variant chip for storing a value at register `address` if `load` is 1
+    - 1 x `Mux`-variant chip for reading the value at register `address` if `load` is 0
+
+- `RAM16K` chip:
+  - same pattern as `RAM8`, but input `address` is 14-bits instead of 3-bits
+  - map higher bits (indices 11 to 13) of `address` to `DMux4Way`'s `sel` input bit
+  - map lower bits (indices 0 to 10) of `address` to the individual `address` input bits of the 4 `RAM4K` chips
+  - components:
+    - 4 x `RAM4K` chips for storing the 16-bit values
     - 1 x `DMux`-variant chip for storing a value at register `address` if `load` is 1
     - 1 x `Mux`-variant chip for reading the value at register `address` if `load` is 0
