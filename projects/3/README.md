@@ -7,7 +7,7 @@ Complete all HDL program implementations for all 8 logic gates or chips in chapt
 - [x] `Bit`
 - [x] `Register`
 - [x] `RAM8`
-- [ ] `RAM64`
+- [x] `RAM64`
 - [ ] `RAM512`
 - [ ] `RAM4K`
 - [ ] `RAM16K`
@@ -43,5 +43,14 @@ sh HardwareSimulator.sh ../projects/1/Not.tst
   ```
   - components:
     - 8 x `Register` chips for storing the 8 16-bit values
+    - 1 x `DMux`-variant chip for storing a value at register `address` if `load` is 1
+    - 1 x `Mux`-variant chip for reading the value at register `address` if `load` is 0
+
+- `RAM64` chip:
+  - same pattern as `RAM8`, but `address` is 6-bits instead of 3-bits
+  - map higher bits (indices 3 to 5) of `address` to `DMux8Way`'s `sel` input bit
+  - map lower bits (indices 0 to 2) of `address` to the individual `address` input bits of the 8 `RAM8` chips
+  - components:
+    - 8 x `RAM8` chips for storing the 8 16-bit values
     - 1 x `DMux`-variant chip for storing a value at register `address` if `load` is 1
     - 1 x `Mux`-variant chip for reading the value at register `address` if `load` is 0
