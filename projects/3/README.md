@@ -11,7 +11,7 @@ Complete all HDL program implementations for all 8 logic gates or chips in chapt
 - [x] `RAM512`
 - [x] `RAM4K`
 - [x] `RAM16K`
-- [ ] `PC`
+- [x] `PC`
 
 ## How To Test
 
@@ -81,3 +81,20 @@ sh HardwareSimulator.sh ../projects/1/Not.tst
     - 4 x `RAM4K` chips for storing the 16-bit values
     - 1 x `DMux`-variant chip for storing a value at register `address` if `load` is 1
     - 1 x `Mux`-variant chip for reading the value at register `address` if `load` is 0
+
+- `PC` chip:
+  ```
+  Chip Name:  PC
+  Input:      in[16], load, inc, reset
+  Output:     out[16]
+  Function:   16-bit counter
+  if reset(t)     out(t+1) = 0
+  else if load(t) out(t+1) = int(t)
+  else if inc(t)  out(t+1) = out(t) + 1 (integer addition)
+  else            out(t+1) = out(t)
+  ```
+  - chip components:
+    - 1 x `Register` chip
+    - 3 x `Mux16` chip(s)
+    - 1 x `Inc16` chip
+    - 2 x `Or` chips
