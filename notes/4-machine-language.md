@@ -395,6 +395,7 @@
     - if 1st `j` bit is 1 -> jump (option 2) if output < 0
     - if 2nd `j` bit is 1 -> jump (option 2) if output = 0
     - if 3rd `j` bit is 1 -> jump (option 2) if output > 0
+    - unconditional goto syntax: `0;JMP`
   - preventing A register use conflicts:
     - because running `@n` sets both `RAM[n]` and `ROM[n]`
     - best practice:
@@ -419,8 +420,10 @@
 - label symbols: like keyword functions
   - the set: `LOOP`, `STOP`, `END`
   - writing convention: all uppercase
+  - syntax: `(xxx)`
 - variable symbols: normal variables
   - writing convention: all lowercase
+  - syntax: `xxx`
 
 ### 4.2.5 Input / Output Handling
 
@@ -442,17 +445,189 @@
   - `RAM[SCREEN] = SCREEN[16384] = 1st row of screen`
   - Hack cannot access individual pixels / bites directly
 - keyboard:
-  - todo
+  - referenced by symbol `KBD`
+  - gets input via the word memory map at `RAM[24576]`
+  - no key press -> code 0
 
 ### 4.2.7 Syntax Conventions and File Formats
 
 - binary code files:
+  - binary Hack programs stored with `.hack` file extension
+  - of 16-bit binary numbers per line separated by newline chars
+  - `n`th line in code is stored in the Hack computer at address `n` in instruction memory
+  - 0-indexed
 - assembly language files:
+  - symbolic Hack programs stored with `.asm` file extension
+  - of text lines separated by newline chars
+  - each line is 1 of the 4:
+    - A-instruction OR
+    - C-instruction OR
+    - label declaration: AKA pseudo-instructions; symbol OR
+    - comment
+  - assembler binds a symbol to the next instruction's address
 - constants and symbols:
-- comments:
-- white space:
+  - constant: a non-negative integer in the range [0, 2^15=1]
+  - symbol: a series of letters, digits, _, ., $, :, that is non-digit starting
+- comments: prefix with double slash `//`
+- white space: is ignored
 - case conventions:
+  - uppercase: assembly mnemonics, label symbols
+  - lowercase: variable symbols
 
 ## 4.3 Hack Programming
 
-- todo
+### Example 1: `Add.asm`
+
+- user inputs values at `RAM[0]` and `RAM[1]` before running program
+- sums up values at `RAM[0]` and `RAM[1]` and 17
+- stores result in third register `RAM[2]`
+- program ends with an infinite loop
+
+- Hack assembly code:
+```asm
+// Program: Add.asm
+// Computes: RAM[2] = RAM[0] + RAM[1] + 17
+// Usage: put values in RAM[0] and in RAM[1]
+  // D = RAM[0]
+  // R0 = 0 -> A = 0 -> M = RAM[0] -> instruction = ROM[0]
+  @R0
+  // D = M -> D = RAM[0] -> D = x (some non-negative integer)
+  D=M
+
+  // D = D + RAM[1]
+  // R1 = 1 -> A = 1 -> M = RAM[1] -> instruction = ROM[1]
+  @R1
+  // D = RAM[0] + RAM[1] 
+  // -> D = x + y (another non-negative integer)
+  D=D+M
+
+  // D = D + 17
+  // A = 17 -> M = RAM[17] -> instruction = ROM[17]
+  @17
+  // D = (x + y) + 17
+  D=D+A
+
+  // RAM[2] = D
+  // R2 = 2 -> A = 2 -> M = RAM[2] -> instruction = ROM[2]
+  @R2
+  // M = (x + y) + 17
+  M=D
+
+// binds label symbol `END` to address of next instruction
+(END)
+  // END = an address x -> M = RAM[x] -> instruction = ROM[x]
+  @END
+
+  // 
+  0;JMP
+```
+
+### Example 2: `Sum1ToN.asm`
+
+- TODO
+
+- Hack assembly code:
+```asm
+// File: Sum1ToN.asm
+// Computes RAM[1] = 1 + 2 + 3 + ... + RAM[0]
+// Usage: put a value >= 1 in RAM[0]
+  // i = 1
+  // Declares a variable symbol `i`
+  // A = i -> M = RAM[i] -> instruction = ROM[i]
+  @i
+  // M = 1 -> RAM[i] = 1
+  M=1
+  
+  // sum = 0
+  // Declares a variable symbol `sum`
+  // A = sum -> M = RAM[sum] -> instruction = ROM[sum]
+  @sum
+  // M = 0 -> RAM[sum] = 0
+  M=0
+
+// declares a label `LOOP`
+(LOOP)
+  // if (i > R0) goto STOP
+  @i
+  D=M
+  @R0
+  D=D-M
+  @STOP
+  D;JGT
+  
+  // sum = sum + i
+  @sum
+  D=M
+  @i
+  D=D+M
+  @sum
+  M=D
+
+  // i = i + 1
+  @i
+  M=M+1
+
+  // goto LOOP
+  @LOOP
+  0;JMP
+(STOP)
+  // R1 = sum
+  @sum
+  D=M
+  @R1
+  M=D
+(END)
+  @END
+  0;JMP
+```
+
+### Example 3: `PointerDemo.asm`
+
+- TODO
+
+- pseudocode:
+```
+// Program: PointerDemo
+// Starting at base address R0,
+// sets the first R1 words to -1
+  n = 0
+LOOP:
+  if (n == R1) goto END
+  *(R0 + n) = -1
+  n = n + 1
+  goto LOOP
+END:
+```
+
+- Hack assembly code:
+```asm
+// Program: PointerDemo
+// Starting at base address R0,
+// sets the first R1 words to -1
+  // n = 0
+  @n
+  M=0
+(LOOP)
+  // if (n == R1) goto END
+  @n
+  D=M
+  @R1
+  D=D-M
+  @END
+  D;JEQ
+  // *(R0 + n) = -1
+  @R0
+  D=M
+  @n
+  A=D+M
+  M=-1
+  // n = n + 1
+  @n
+  M=M+1
+  // goto LOOP
+  @LOOP
+  0;JMP
+(END)
+  @END
+  0;JMP
+```
