@@ -44,4 +44,10 @@ CPUSimulator.sh ../projects/4/Fill.tst
 
 ### `Fill.asm` program
 
-- problem: TODO
+- problem:
+  - inputs:
+    - any key press
+  - outputs:
+    - none
+  - side effects:
+    - todo

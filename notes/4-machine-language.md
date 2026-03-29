@@ -429,15 +429,15 @@
 
 - how input/ouput connects to the Hack computer hardware:
   ```
-  input -> keyboard -\
-                     | <-> memory maps <-> Hack hardware
-  output <- screen <-/
+  input -> keyboard ->\
+                      | <-> memory maps <-> Hack hardware
+  output <- screen <--/
   ```
 - screen:
   - color:                       black and white
   - resolution (width x height): 512 x 256 pixels
   - each row = 32 x 16-bit values (i.e., words)
-  - screen origin (row 0, col 0 )= top-left corner
+  - screen origin (row 0, col 0) = top-left corner
   - pixel at (row, col) mapping:
     - = RAM[SCREEN + row * 32 + col / 16]
   - if pixel bit = 1 -> black
