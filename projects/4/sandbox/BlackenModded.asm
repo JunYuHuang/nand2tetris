@@ -1,18 +1,6 @@
-// Sets the `A` register to the address of the RAM register 
-// that represents the 16 left-most pixels at the screen's
-// top row:
-// @SCREEN
-
-// Sets this RAM register to 1111111111111111
-// M = -1
-
-//
-// Blacken all 512 x 256 pixels of the screen
-//
-
 // loop 8192 times to traverse all 512 x 256 pixels in the screen in 16-bit increments
 @8192
-D = A
+D = A - 1
 @i
 M = D
 
@@ -28,14 +16,14 @@ M = D
   @i
   D = M
   @SCREEN
-  A = A + D
+  A = D + A
   M = -1
 
-  // i--
+  // decrement `i` by 1
   @i
   M = M - 1
 
-  // next iteration
+  // go to next iteration
   @LOOP_OUTER
   0 ; JMP
 

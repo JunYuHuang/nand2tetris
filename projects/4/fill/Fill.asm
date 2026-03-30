@@ -17,7 +17,7 @@
 
   // set the counter and index for the inner loop
   @8192
-  D = A
+  D = A - A
   @screenOffset
   M = D
 
@@ -34,16 +34,7 @@
     @LOOP_INNER_END
     D ; JLT
 
-    // compute and store the screen index in `screen`
-    @SCREEN
-    D = A
-    @screen
-    M = D
-    D = M
-    @screenOffset
-    D = D + M
-    @screen
-    M = D
+    // make the 16 pixels at `RAM[SCREEN + offset]` black
 
     // set the 16 pixels at `RAM[screen]` to `pixelColor`'s value
     @pixelColor
