@@ -46,8 +46,33 @@ CPUSimulator.sh ../projects/4/Fill.tst
 
 - problem:
   - inputs:
-    - any key press
+    - `keyPressed`: variable that represents the character pressed on the keyboard as a 16-bit integer
+      - `0` = no key pressed
+      - any integer != `0` = some key pressed
   - outputs:
     - none
   - side effects:
-    - todo
+    - sets all 512 x 256 (width x height) pixels of the screen resolution to be all black or all white depending on if the key pressed by the user
+      - any key pressed -> make screen all black
+      - no key pressed -> make screen all white
+  - notes:
+    - screen resolution 512 x 256 pixels = 131072 pixels
+    - pixels are represented in 16 pixel chunks by a 16-bit integer in memory starting at the RAM address bound to the symbol label / constant `@SCREEN`
+      - traverse 16-pixels at a time for a total of 131072 / 16 = 8192 times
+- pseudocode: 
+  - `pixelColor`: variable that represents the colour of a pixel as a 16-bit integer
+    - `1` = black
+    - `0` = white
+  - `screenRow`: 16-bit integer = `SCREEN` + `screenRowOffset`
+  - `screenRowOffset`: variable that tracks the current row of the screen we are traversing as a 16-bit integer
+    - is an integer in the range [0, 255]
+  - while true:
+    - if `keyPressed` is `0`,
+      - set `pixelColor` to `0`
+    - else,
+      - set `pixelColor` to a 16-bit binary value of all `1`'s
+    - set `screenRowOffset` to `255`
+    - while `screenRowOffset` >= `0`,
+      - set `screenRow` = `SCREEN` + `screenRowOffset`
+      - set `RAM[screenRowOffset]` to `pixelColor`
+      - decrement `screenRowOffset` by 1

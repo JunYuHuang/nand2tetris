@@ -631,3 +631,55 @@ END:
   @END
   0;JMP
 ```
+
+## Misc
+
+- see this [Hack Assembly cheatsheet](https://www.jk-quantized.com/experiments/HomebrewComputer/Cheatsheets/hackASM.html)
+- Hack computer platform symbols and Assembly language reference:
+
+```
+Symbol      | Meaning
+------------+---------------------------------------------------
+A           | Address register; A-register: stores a 16-bit
+            | integer that represents a data value or a memory
+            | address e.g., 0.
+------------+---------------------------------------------------
+M           | Data memory register; RAM; Random Access Memory; 
+            | points to `RAM[A]`, a 16-bit integer stored in a
+            | RAM register at the memory address stored in the
+            | A-register.
+------------+---------------------------------------------------
+instruction | Instruction memory; ROM; Read-Only Memory; points
+/ PC        | to `ROM[A]`, a 16-bit integer stored in the ROM
+            | register at the memory address stored in the 
+            | A-register.
+------------+---------------------------------------------------
+D           | Data register; D-register: stores a 16-bit 
+            | integer that represents a data value e.g., 1.
+------------+---------------------------------------------------
+@23         | Creates an integer constant with the value `23`.
+            | Sets the A-register to the value `23`.
+            | Effects:
+            | 1. A = 23
+            | 2. M = RAM[23]
+            | 3. PC = ROM[23]
+------------+---------------------------------------------------
+@52         | Creates an integer constant with the value `23`.
+D;JEQ       | Sets the next instruction to be run at the value
+            | stored at `ROM[52]`.
+            | Evaluate the value stored in the D-register.
+            | If `D` equals 0, go or jump to the next
+            | instruction at `ROM[52]`.
+            | Effects:
+            | 1. A = 52
+            | 2. M = RAM[52]
+            | 3. PC = ROM[52]
+------------+---------------------------------------------------
+@x          | Creates an integer variable or symbol `x`.
+------------+---------------------------------------------------
+D=M         | Sets the D-register's value to the value stored 
+            | at `M`, a data memory register:
+            | - D = RAM[A]
+------------+---------------------------------------------------
+
+```
