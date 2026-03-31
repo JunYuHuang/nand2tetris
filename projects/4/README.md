@@ -5,14 +5,14 @@
 Complete all Hack Assembly implementations for the programs below chapter 3:
 
 - [x] `Mult`
-- [ ] `Fill`
+- [x] `Fill`
 
 ## How To Test
 
 Run the CPU simulator script against the test script for the Hack Assembly program. Example for testing the `Fill.asm` program in a Linux Bash terminal:
 ```
 cd nand2tetris/tools
-CPUSimulator.sh ../projects/4/Fill.tst
+CPUSimulator.sh ../projects/4/FillAutomatic.tst
 ```
 
 ## Notes
@@ -63,16 +63,17 @@ CPUSimulator.sh ../projects/4/Fill.tst
   - `pixelColor`: variable that represents the colour of a pixel as a 16-bit integer
     - `1` = black
     - `0` = white
-  - `screenRow`: 16-bit integer = `SCREEN` + `screenRowOffset`
-  - `screenRowOffset`: variable that tracks the current row of the screen we are traversing as a 16-bit integer
+  - `screen`: 16-bit integer = `SCREEN` + `screenOffset`
+  - `screenOffset`: variable that tracks the current row of the screen we are traversing as a 16-bit integer
     - is an integer in the range [0, 255]
   - while true:
     - if `keyPressed` is `0`,
       - set `pixelColor` to `0`
     - else,
       - set `pixelColor` to a 16-bit binary value of all `1`'s
-    - set `screenRowOffset` to `255`
-    - while `screenRowOffset` >= `0`,
-      - set `screenRow` = `SCREEN` + `screenRowOffset`
-      - set `RAM[screenRowOffset]` to `pixelColor`
-      - decrement `screenRowOffset` by 1
+        - i.e., set it to `-1`
+    - set `screenOffset` to `8192 - 1`
+    - while `screenOffset` >= `0`,
+      - set `screen` = `SCREEN` + `screenOffset`
+      - set `RAM[screenOffset]` to `pixelColor`
+      - decrement `screenOffset` by 1

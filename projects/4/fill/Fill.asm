@@ -11,19 +11,47 @@
 // outer loop for reading the key pressed
 (LOOP_OUTER)
 
-  // DEBUG mode: set `keyPressed` to 1 indicating some key was pressed
+  // store the key character code in variable `keyPressed`
+  @KBD
+  D = M
   @keyPressed
-  M = 1
+  M = D
 
   // set the counter and index for the inner loop
+  // we are looping 8192 times because:
+  // 1. there are 512 x 256 = 131072 pixels
+  // 2. pixels are represented in groups of 16 in RAM
+  // 3. we traverse all pixels 16 at a time (131072 / 16) = 8192 times
   @8192
-  D = A - A
+  D = A - 1
   @screenOffset
   M = D
 
-  // DEBUG mode: set `pixelColor` to black (all 16 bits are 1's)
-  @pixelColor
-  M = -1
+  // if no key was pressed, set pixel color to white (16-bits of all 0's)
+  @keyPressed
+  D = M
+  @SET_PIXELS_WHITE
+  D ; JEQ
+
+  // if any key was pressed, set pixel color to black (16-bits of all 1's)
+  @keyPressed
+  D = M
+  @SET_PIXELS_BLACK
+  D ; JNE
+
+  (SET_PIXELS_WHITE)
+    @pixelColor
+    M = 0
+
+    @LOOP_INNER
+    0 ; JMP
+
+  (SET_PIXELS_BLACK)
+    @pixelColor
+    M = -1
+
+    @LOOP_INNER
+    0 ; JMP
 
   // inner loop for coloring all pixels of the 512 x 256 screen
   (LOOP_INNER)
@@ -34,12 +62,19 @@
     @LOOP_INNER_END
     D ; JLT
 
-    // make the 16 pixels at `RAM[SCREEN + offset]` black
+    // store the address of the 16 pixels at `RAM[SCREEN + offset]`
+    // in the variable `screenAddress`
+    @screenOffset
+    D = M
+    @SCREEN
+    D = D + A
+    @screenAddress
+    M = D
 
-    // set the 16 pixels at `RAM[screen]` to `pixelColor`'s value
+    // set the 16 pixels at `RAM[screenAddress]` to `pixelColor`'s value
     @pixelColor
     D = M
-    @screen
+    @screenAddress
     A = M
     M = D
 
