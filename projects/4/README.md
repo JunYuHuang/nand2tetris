@@ -65,7 +65,7 @@ CPUSimulator.sh ../projects/4/FillAutomatic.tst
     - `0` = white
   - `screen`: 16-bit integer = `SCREEN` + `screenOffset`
   - `screenOffset`: variable that tracks the current row of the screen we are traversing as a 16-bit integer
-    - is an integer in the range [0, 255]
+    - is an integer in the range [0, 8191]
   - while true:
     - if `keyPressed` is `0`,
       - set `pixelColor` to `0`
