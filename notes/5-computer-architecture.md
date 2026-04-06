@@ -184,7 +184,7 @@ Function:  Exactly like a 16-bit, 8K RAM, plus a screen refresh
 
 - Hack `keyboard` chip interface:
 ```
-Chip Name: Keyboard // Keyboar memory map
+Chip Name: Keyboard // Keyboard memory map
 Output:    out[16]
 Function:  Emits the 16-bit character code of the currently pressed
            key on the physical keyboard or 0 if no key is pressed
