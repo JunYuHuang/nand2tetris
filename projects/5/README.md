@@ -42,7 +42,7 @@ sh HardwareSimulator.sh ../projects/1/Not.tst
   - [24576, 24576] -> Keyboard
   - [24577, Infinity] -> Invalid address
 
-  2^15   | 2^14   | 2^13  | 2^12  | 2^13  | ...
+  2^15   | 2^14   | 2^13  | 2^12  | 2^11  | ...
   -------+--------+-------+-------+-------+-----
   32,768 | 16,384 | 8,192 | 4,096 | 2,048 | ... 
 
@@ -56,7 +56,6 @@ sh HardwareSimulator.sh ../projects/1/Not.tst
 
   Pseudocode logic:
   - if (
-      `address[15]` == 1 OR
       (`address[14]` == 1 AND `address[13]` == 1 AND `address[0]` == 1)
     ),
     - `address` is out-of-bounds (i.e., in range [24577, 32768])
@@ -90,8 +89,19 @@ sh HardwareSimulator.sh ../projects/1/Not.tst
     - `Keyboard` (built-in)
   - component chips & their interfaces:
     - `RAM16K(in= ,load= ,address= ,out= )`
+      - `in[16]`
+      - `load`
+      - `address[14]`
+      - `out[16]`
     - `Screen(in= ,load= ,address= ,out= )`
+      - `in[16]`
+      - `load`
+      - `address[13]`
+      - `out[16]`
     - `Keyboard(out= )`
+      - `out[16]`
+  - helper chips:
+    - TODO
 
 - `CPU` chip:
   ```
