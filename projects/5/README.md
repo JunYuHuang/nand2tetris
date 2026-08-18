@@ -42,9 +42,12 @@ sh HardwareSimulator.sh ../projects/1/Not.tst
   - [24576, 24576] -> Keyboard
   - [24577, Infinity] -> Invalid address
 
-  2^15   | 2^14   | 2^13  | 2^12  | 2^11  | ...
-  -------+--------+-------+-------+-------+-----
-  32,768 | 16,384 | 8,192 | 4,096 | 2,048 | ... 
+  2^14   | 2^13  | 2^12  | 2^11  | ...
+  -------+-------+-------+-------+-----
+  16,384 | 8,192 | 4,096 | 2,048 | ... 
+  0      | ...   | ...   | ...   | ... -> RAM16K address [0, 16383]
+  1      | 0     | ...   | ...   | ... -> Screen address [16384, 24575]
+  1      | 1     | 0     | 0     | ... -> Keyboard address [24576, 32767]
 
   0      = 0 (address[0] or 2^0 == 0)
   16,383 = 2^13 + 2^12 + 2^11 + ... + 2^1
@@ -52,37 +55,7 @@ sh HardwareSimulator.sh ../projects/1/Not.tst
   24,575 = 2^14 + 2^12 + 2^11 + 2^10 + ... + 2^0
   24,576 = 2^14 + 2^13 = 16,384 + 8,192
   24,577 = 2^14 + 2^13 + 2^1 = 16,384 + 8,192 + 1
-  32,768 = 2^15
 
-  Pseudocode logic:
-  - if (
-      (`address[14]` == 1 AND `address[13]` == 1 AND `address[0]` == 1)
-    ),
-    - `address` is out-of-bounds (i.e., in range [24577, 32768])
-    - set `out` to 0 or some value to indicate `address` is invalid?
-  - else if (
-      `address[14]` == 1 AND 
-      `address[13]` == 1 AND
-      (`address[0]` thru `address[12]` == 0)
-    ),
-    - `address` == 24,576 -> access from `Keyboard` chip
-    - set `out` to `Keyboard`'s `out`
-  - else if (
-      `address[14]` == 1 AND
-      `address[13]` == 0
-    ),
-    - `address` is in range [16384, 24575] -> access from `Screen` chip
-    - if `load` == 1,
-      - set `Screen[address - 16384]` to `in`
-    - set `out` to `Screen[address - 16384]`    
-  - else if (
-      `address[14]` == 0
-    ),
-    - `address` is in range [0, 16383] -> access from `RAM16K` chip
-    - if `load` == 1,
-      - set `RAM16K[address]` to `in`
-    - set `out` to `RAM16K[address]`
-  ```
   - component chips:
     - `RAM16K` (built-in)
     - `Screen` (built-in)
@@ -100,8 +73,39 @@ sh HardwareSimulator.sh ../projects/1/Not.tst
       - `out[16]`
     - `Keyboard(out= )`
       - `out[16]`
-  - helper chips:
-    - TODO
+  - possible helper chips:
+    - `DMux(in= ,sel= ,a= ,b= )`
+      - IN:
+        - `in`
+        - `sel`
+      - OUT:
+        - `a`
+        - `b`
+    - `DMux4Way(in= ,sel= ,a= ,b= ,c= ,d= )`
+      - IN:
+        - `in`
+        - `sel[2]`
+      - OUT:
+        - `a`
+        - `b`
+        - `c`
+        - `d`
+    - `Mux16(a= ,b= ,sel= ,out= )`
+      - IN:
+        - `a[16]`
+        - `b[16]`
+        - `sel`
+      - OUT:
+        - `out[16]`
+    - `Mux4Way16(a= ,b= ,c= ,d= ,sel= ,out= )`
+      - IN:
+        - `a[16]`
+        - `b[16]`
+        - `c[16]`
+        - `d[16]`
+        - `sel[2]`
+      - OUT:
+        - `out[16]`
 
 - `CPU` chip:
   ```

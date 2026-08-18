@@ -25,5 +25,23 @@ CHIP Memory {
     OUT out[16];
 
     PARTS:
-	
+	DMux(in=load, sel=address[14], a=loadRam, b=loadScreenOrKeyboard);
+    
+    // 2^14 = 0 -> 2^13 + ... + 2^0 -> address in range [0, 16383]
+    RAM16K(in=in, load=loadRam, address=address[0..13], out=ram16kVal);
+
+    // 2^14 = 1 -> 2^14 + ... + 2^0 -> address in range [16384, 32767]
+    DMux(in=loadScreenOrKeyboard, sel=address[13], a=loadScreen, b=loadKeyboard);
+
+    // 2^13 = 0 -> 2^14 + 0 + 2^12 + ... + 2^0 -> address in range [16384, 24575]
+    Screen(in=in, load=loadScreen, address=address[0..12], out=screenVal);
+
+    // 2^13 = 1 -> 2^14 + 2^13 + ... + 2^0 -> address in range [24576, 32767]
+    Keyboard(out=keyboardVal);
+
+    // 2^13 = 0 ? screen value : keyboard value
+    Mux16(a=screenVal, b=keyboardVal, sel=address[13], out=screenOrKeyboardVal);
+
+    // 2^14 = 0 ? ram value : screen or keyboard value
+    Mux16(a=ram16kVal, b=screenOrKeyboardVal, sel=address[14], out=out);
 }
