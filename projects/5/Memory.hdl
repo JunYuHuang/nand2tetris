@@ -36,7 +36,7 @@ CHIP Memory {
     // 2^13 = 0 -> 2^14 + 0 + 2^12 + ... + 2^0 -> address in range [16384, 24575]
     Screen(in=in, load=loadScreen, address=address[0..12], out=screenVal);
 
-    // 2^13 = 1 -> 2^14 + 2^13 + ... + 2^0 -> address in range [24576, 32767]
+    // 2^13 = 1 -> 2^14 + 2^13 + 2^0 -> address in range [24576, 24576]
     Keyboard(out=keyboardVal);
 
     // 2^13 = 0 ? screen value : keyboard value
