@@ -128,13 +128,172 @@ sh HardwareSimulator.sh ../projects/1/Not.tst
 
 - `CPU` chip:
   ```
-  TODO
+  Chip Name: CPU
+  Input:     instructions[16] // Instruction to execute
+             inM[16]          // The instruction's M input (contents
+                              // of RAM[A])
+             reset            // Signals whether to restart the program (
+                              // if reset==1) or continue executing the
+                              // program (if reset==0).
+  Output:    outM[16]         // Written to RAM[addressM], the instruction's
+                              // M output
+             addressM[15]     // At which address to write?
+             writeM           // Write to the memory?
+             pc[15]           // Address of next instruction
   ```
+  - A-instruction:
+    - syntax:
+      ```
+      Symbolic:
+      @xxx              (xxx is a decimal value ranging from 0 to
+                        32767, or a symbol bound to such a 
+                        decimal value)
+      
+      Binary:
+      0 vvvvvvvvvvvvvvv (vv ... v = 15-bit value of xxx)
+      ```
+    - sets `A` register to a 16-bit value composed of:
+      - 1 ) an operation code (AKA op-code) via the leftmost bit
+      - 2 ) a 15-bit non-negative binary number value
+    - 3 functions:
+      - 1 ) allows inputting constant values
+      - 2 ) sets `A` register to a RAM register's address -> sets up prereqs for a C-instruction
+      - 3 ) sets `A` register to jump destination's address -> sets up prereq for another C-instruction
+  - C-instruction:
+    - syntax:
+      ```
+      Symbolic:
+      dest = comp ; jump     (comp is mandatary.
+                            If dest is empty, the = is omitted;
+                            If jump is empty, the ; is omitted)
+
+      Binary:
+      111accccccdddjjj
+
+      dest   d d d  Effect: store comp in:
+      -----+-------+-------------------------
+      null | 0 0 0 | the value is not stored 
+      M    | 0 0 1 | RAM[A]
+      D    | 0 1 0 | D register (reg)
+      DM   | 0 1 1 | D reg and RAM[A]
+      A    | 1 0 0 | A reg
+      AM   | 1 0 1 | A reg and RAM[A]
+      AD   | 1 1 0 | A reg and D reg
+      ADM  | 1 1 1 | A reg, D reg, and RAM[A]
+      -----+-------+-------------------------
+
+
+      jump   j j j  Effect:
+      -----+-------+-------------------
+      null | 0 0 0 | no jump
+      JGT  | 0 0 1 | if comp > 0 jump
+      JEQ  | 0 1 0 | if comp = 0 jump
+      JGE  | 0 1 1 | if comp >= 0 jump
+      JLT  | 1 0 0 | if comp < 0 jump
+      JNE  | 1 0 1 | if comp != 0 jump
+      JLE  | 1 1 0 | if comp <= 0 jump
+      JMP  | 1 1 1 | unconditional jump
+      -----+-------+-------------------
+      ```
+    - does 3 things:
+      - 1 ) `comp`: what to compute (i.e., ALU operation)
+      - 2 ) `dest`: where to store computed value
+      - 3 ) `jump`: what to do next
+    - computation specification (comp):
+      - are these 7 bits in the C-instruction binary:
+        ```
+        111accccccdddjjj
+          ^     ^
+          |_____|
+            comp 
+        ```
+      - how the memory / registers feed into the ALU:
+        ```
+        D register -----------------------> x -\
+                                              |
+        A register ---------------------\      |-> ALU -> out
+        (if C-instruction's a-bit is 0) |      |
+                                        |-> y -/
+        M register ---------------------/
+        (if C-instruction's a-bit is 1)
+        ```
+      - example assembly language operations:
+        - `D-1` does `D`-register's value minus 1
+        - `D|M` does `D`-register's value OR'd with `M`-register's value
+    - destination specification (dest):
+      - are these 3 bits in the C-instruction binary:
+        ```
+        111accccccdddjjj
+                  ^ ^
+                  |_|
+                  dest 
+        ```
+      - sets where to store the output of the ALU: 0 to 3 options
+        - if 1st `d` bit is 1 -> stores output in `A` register
+        - if 2nd `d` bit is 1 -> stores output in `D` register
+        - if 3rd `d` bit is 1 -> stores output in `M` register
+    - jump directive (jump):
+      - are these 3 bits in the C-instruction binary:
+        ```
+        111accccccdddjjj
+                    ^ ^
+                    |_|
+                    jump 
+        ```
+      - sets what do next:
+        - 1 ) read + run the next instruction OR
+        - 2 ) read + run another instruction (stored in `A`-register)
+      - if 1st `j` bit is 1 -> jump (option 2) if output < 0
+      - if 2nd `j` bit is 1 -> jump (option 2) if output = 0
+      - if 3rd `j` bit is 1 -> jump (option 2) if output > 0
+      - unconditional goto syntax: `0;JMP`
+    - preventing A register use conflicts:
+      - because running `@n` sets both `RAM[n]` and `ROM[n]`
+      - best practice:
+        - 1 ) set `M`-register referenced C-instruction with no jump OR
+        - 2 ) set C-instruction with jump and no `M`-register ref
   - component chips:
-    - `ALU` (built-in)
-    - `ARegister` (built-in)
-    - `DRegister` (built-in)
-    - `PC` (built-in)
+    - `ALU(x= ,y= , zx= ,nx= ,zy= ,ny= ,f= ,no= ,out= ,zr= ,ng= )` (built-in)
+      - IN:
+        - `x[16]`
+        - `y[16]`
+        - `zx`
+        - `nx`
+        - `zy`
+        - `ny`
+        - `f`
+        - `no`
+      - OUT:
+        - `out[16]`
+        - `zr`
+        - `ng`
+    - `ARegister(in= ,load= ,out= )` (built-in)
+      - IN:
+        - `in[16]`
+        - `load`
+      - OUT:
+        - `out[16]`
+    - `DRegister(in= ,load= ,out= )` (built-in)
+      - IN:
+        - `in[16]`
+        - `load`
+      - OUT:
+        - `out[16]`
+    - `PC(in=, inc= ,load= ,reset= ,out= )` (built-in)
+      - IN:
+        - `in[16]`
+        - `inc`
+        - `load`
+        - `reset`
+      - OUT:
+        - `out[16]`
+    - `Mux16(a= ,b= ,sel= ,out= )`
+      - IN:
+        - `a[16]`
+        - `b[16]`
+        - `sel`
+      - OUT:
+        - `out[16]`
 
 - `Computer` chip:
   ```
