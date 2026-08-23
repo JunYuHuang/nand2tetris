@@ -262,7 +262,20 @@ Function:  When `reset` == 0, the program stored in the computer
   - 2 x Mux16
   - PC
 - instruction decoding:
-  - TODO
+  - `CPU` chip's `instruction` input:
+    - 1) A-instruction:
+      - 16-bits of = 0 + 15 * v, where:
+        - `0` = opcode that indicates it is an A-instruction
+        - 15 * `v` = a binary value in range \[0, 32767]
+      - stores 15 * v into `A Register` chip
+    - 2) C-instruction:
+      - 16-bits of = 1 + 2 * x + a + 6 * c + 3 * d + 3 * j, where:
+        - `0` = opcode that indicates it is a C-instruction
+        - `x` = ignored bits
+        - `a` = sets `A Register` value or `inM` as `ALU` input
+        - `c` = comp; sets compute function for `ALU`
+        - `d` = dest; sets which registers (A, D, M) stores `ALU` output
+        - `j` = jmp; next instruction to fetch or jump to
 - instruction execution:
   - TODO
 - instruction fetching:
@@ -270,7 +283,10 @@ Function:  When `reset` == 0, the program stored in the computer
 
 ### 5.3.2 Memory
 
-- `Memory` chip is in figure 5.6 (from section 5.2.5 Data Memory)
+- `Memory` chip:
+  - is in figure 5.6 (from section 5.2.5 Data Memory)
+  - `Memory` = `RAM16K` + `Screen` + `Keyboard`
+  - single address space from 0 to 24576 (hex 0x6000)
 
 ### 5.3.3 Computer
 

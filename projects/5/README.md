@@ -170,6 +170,29 @@ sh HardwareSimulator.sh ../projects/1/Not.tst
       Binary:
       111accccccdddjjj
 
+           comp      c c c c c c
+      -------+-----+------------
+      0      |     | 1 0 1 0 1 0
+      1      |     | 1 1 1 1 1 1
+      -1     |     | 1 1 1 0 1 0
+      D      |     | 0 0 1 1 0 0
+      A      | M   | 1 1 0 0 0 0
+      !D     |     | 0 0 1 1 0 1
+      !A     | !M  | 1 1 0 0 0 1
+      -D     |     | 0 0 1 1 1 1
+      -A     | -M  | 1 1 0 0 1 1
+      D+1    |     | 0 1 1 1 1 1
+      A+1    | M+1 | 1 1 0 1 1 1
+      D-1    |     | 0 0 1 1 1 0
+      A-1    | M-1 | 1 1 0 0 1 0
+      D+A    | D+M | 0 0 0 0 1 0
+      D-A    | D-M | 0 1 0 0 1 1
+      A-D    | M-D | 0 0 0 1 1 1
+      D&A    | D&M | 0 0 0 0 0 0
+      D|A    | D|M | 0 1 0 1 0 1
+      -------+-----+------------
+      a == 0  a == 1
+
       dest   d d d  Effect: store comp in:
       -----+-------+-------------------------
       null | 0 0 0 | the value is not stored 
@@ -210,7 +233,7 @@ sh HardwareSimulator.sh ../projects/1/Not.tst
       - how the memory / registers feed into the ALU:
         ```
         D register -----------------------> x -\
-                                              |
+                                               |
         A register ---------------------\      |-> ALU -> out
         (if C-instruction's a-bit is 0) |      |
                                         |-> y -/
@@ -252,6 +275,35 @@ sh HardwareSimulator.sh ../projects/1/Not.tst
       - best practice:
         - 1 ) set `M`-register referenced C-instruction with no jump OR
         - 2 ) set C-instruction with jump and no `M`-register ref
+  - questions:
+    - What determines whether `ARegister` loads the instruction or the ALU result?
+      - `instruction` input's MSB (i.e., `instruction[15]`)
+      - if `instruction` is an A-instruction, load it into `ARegister`
+        - A-instruction if `instruction[15]` == 0
+      - else if `instruction` is a C-instruction, load ALU result into `ARegister`
+        - C-instruction if `instruction[15]` == 1
+    - What determines whether `DRegister` loads?
+      - `instruction` input
+        - is C-instruction
+        - 2nd `d` bit (i.e., `instruction[4]`)
+      - if `instruction[4]` == 1, load ALU output in `DRegister`
+      - else (`instruction[4]` == 0), do nothing
+    - What determines `writeM`?
+      - `instruction` input
+        - is C-instruction
+        - 3rd `d` bit (i.e., `instruction[3]`)
+      - if `instruction[3]` == 1,
+        - sets `writeM` output to 1
+      - else (`instruction[3]` == 0),
+        - sets `writeM` output to 0
+    - What selects `A` vs `M` as the ALU's Y input?
+      - TODO
+    - Where should `outM` come from?
+      - TODO
+    - What two ALU outputs are needed to implement all the jump conditions?
+      - TODO
+    - What value should be presented to the PC's `in` when a jump occurs?
+      - TODO
   - component chips:
     - `ALU(x= ,y= , zx= ,nx= ,zy= ,ny= ,f= ,no= ,out= ,zr= ,ng= )` (built-in)
       - IN:
