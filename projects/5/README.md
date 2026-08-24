@@ -296,25 +296,76 @@ sh HardwareSimulator.sh ../projects/1/Not.tst
         - sets `writeM` output to 1
       - else (`instruction[3]` == 0),
         - sets `writeM` output to 0
-    - What selects `A` vs `M` as the ALU's Y input?
-      - TODO
+    - What selects `A` vs `M` as the ALU's `y` input?
+      - `instruction` input
+        - assumes C-instruction
+        - `a` bit i.e., `instruction[12]`
+      - if `instruction[12]` == 0,
+        - `ARegister` output -> `ALU` Y input
+      - else (`instruction[12]` == 1),
+        - `RAM[A]` / `inM` / `M`-> `ALU` Y input
     - Where should `outM` come from?
-      - TODO
+      - `ALU` output
     - What two ALU outputs are needed to implement all the jump conditions?
-      - TODO
+      - `zr` and `ng`
     - What value should be presented to the PC's `in` when a jump occurs?
-      - TODO
+      - `ARegister` output
   - component chips:
     - `ALU(x= ,y= , zx= ,nx= ,zy= ,ny= ,f= ,no= ,out= ,zr= ,ng= )` (built-in)
       - IN:
         - `x[16]`
+          - = `DRegister` output
         - `y[16]`
-        - `zx`
-        - `nx`
-        - `zy`
-        - `ny`
-        - `f`
-        - `no`
+          - = `ARegister` output or `inM`
+        - `zx`: sets `x` (`DRegister`) to 0 if `zx` is 1
+          - set `zx` = 1 if:
+            - `a` bit (`instruction[12]`) == 0 AND
+            - 1st, 3rd, 5th `c` bits are 1
+              - indices 11, 9, 7 in `instruction`
+            - 2nd, 4th, 6th `c` bits are 0
+              - indices 10, 8, 6 in `instruction`
+          - else `zx` = 0
+        - `nx`: sets `x` (`DRegister`) to `!x` if `nx` is 1
+          - set `nx` = 1 if:
+            - `a` bit (`instruction[12]`) == 0 AND
+            - 3rd, 4th, 6th `c` bits are 1
+              - indices 9, 8, 6 in `instruction`
+            - 1st, 2nd, 5th `c`bits are 0
+              - indices 11, 10, 7 in `instruction`
+          - else `nx` = 0
+        - `zy`: sets `y` (`ARegister` or `inM`) to 0 if `zy` is 1
+          - set `zy` = 1 if:
+            - `a` bit (`instruction[12]`) == 0 AND
+            - 1st, 3rd, 5th `c` bits are 1
+              - indices 11, 9, 7 in `instruction`
+            - 2nd, 4th, 6th `c` bits are 0
+              - indices 10, 8, 6 in `instruction`
+          - else `zy` = 0
+        - `ny`: sets `y` (`ARegister` or `inM`) to `!y` if `ny` is 1
+          - set `ny` = 1 if:
+            - 1st, 2nd, 6th `c` bits are 1
+              - indices 11, 10, 6 in `instruction`
+            - 3rd, 4th, 5th `c` bits are 0
+              - indices 9, 8, 7 in `instruction`
+          - else `ny` = 0
+        - `f`: (`x + y`) if `f` is 1, else (`x & y`)
+          - set `f` = 1 if:
+            - 5th `c` bit (`instruction[7]`) is 1
+            - 1st, 2nd, 3rd, 4th, 6th `c` bits are 0
+              - indices 11, 10, 9, 8, 6 in `instruction`
+          - else `f` = 0 if:
+            - all `c` bits (`instructions[6..11]`) are 0
+        - `no`: `!out` if `no` is 1, else `out`
+          - if storing `out` in `ARegister`, means:
+            - 1st `d` bit (`instruction[5]`) is 1
+            - set `ARegister` value to `!ARegister`:
+              - ??
+          - if storing `out` in `DRegister`:
+            - 2nd `d` bit (`instruction[4]`) is 1
+            - TODO
+          - if storing `out` in `RAM[3]` / `outM`:
+            - 3rd `d` bit (`instruction[3]`) is 1
+            - TODO
       - OUT:
         - `out[16]`
         - `zr`
@@ -322,15 +373,36 @@ sh HardwareSimulator.sh ../projects/1/Not.tst
     - `ARegister(in= ,load= ,out= )` (built-in)
       - IN:
         - `in[16]`
-        - `load`
+          - = `ALU` output if `instruction` is C-instruction
+            - C-instruction = `instruction[15]` is 1
+          - = `instruction` output if `instruction` is A-instruction
+            - A-instruction = `instruction[15]` is 0
+        - `load`: stores `in[16]` if set to 1, else keeps old value if 0
+          - stores `instruction` if it is A-instruction
+            - `instruction[15]` == 0
+            - -> `Not(instruction[15])`
+          - stores `instruction` if:
+            - is C-instruction; `instruction[15]` == 1
+            - `dest` (3 `d`) bits in `instruction` = `A`, `AM`, `AD`, or `ADM`
+              - 1st `d` bit (`instruction[5]`) is 1
+              - other `d` bits don't matter
+            - -> `And(instruction[15], instruction[5])
+          - = `Xor(Not(instruction[15]), And(instruction[15], instruction[5]))
       - OUT:
         - `out[16]`
     - `DRegister(in= ,load= ,out= )` (built-in)
       - IN:
-        - `in[16]`
-        - `load`
+        - `in[16]` = `ALU` output
+        - `load`: stores `in[16]` if set to 1, else keeps old value if 0
+          - set to 1 if:
+            - `instruction` is C-instruction
+              - `instruction[15]` is 1
+            - `dest` (3 `d`) bits indicates `D`, `DM`, `AD`, or `ADM`
+              - 2nd `d` (`instruction[4]`) is 1
+              - other `d` bits don't matter
+          - -> `And(instruction[15], instruction[4])`
       - OUT:
-        - `out[16]`
+        - `out[16]` = `ALU` `x` input
     - `PC(in=, inc= ,load= ,reset= ,out= )` (built-in)
       - IN:
         - `in[16]`
