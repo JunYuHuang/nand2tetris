@@ -288,28 +288,42 @@ sh HardwareSimulator.sh ../projects/1/Not.tst
         - 2nd `d` bit (i.e., `instruction[4]`)
       - if `instruction[4]` == 1, load ALU output in `DRegister`
       - else (`instruction[4]` == 0), do nothing
+      - -> `And(instruction[15], instruction[4])`
     - What determines `writeM`?
       - `instruction` input
-        - is C-instruction
+        - is C-instruction (i.e., `instruction[15]` == 1)
         - 3rd `d` bit (i.e., `instruction[3]`)
-      - if `instruction[3]` == 1,
+      - if 3rd `d` bit (`instruction[3]`) == 1,
         - sets `writeM` output to 1
       - else (`instruction[3]` == 0),
         - sets `writeM` output to 0
+      - -> `And(instruction[15], instruction[3])`
     - What selects `A` vs `M` as the ALU's `y` input?
       - `instruction` input
         - assumes C-instruction
         - `a` bit i.e., `instruction[12]`
-      - if `instruction[12]` == 0,
+      - if C-instruction's `a` bit (`instruction[12]`) == 0,
         - `ARegister` output -> `ALU` Y input
       - else (`instruction[12]` == 1),
         - `RAM[A]` / `inM` / `M`-> `ALU` Y input
+      - -> `And(instruction[15], instruction[12])`
     - Where should `outM` come from?
       - `ALU` output
     - What two ALU outputs are needed to implement all the jump conditions?
       - `zr` and `ng`
     - What value should be presented to the PC's `in` when a jump occurs?
       - `ARegister` output
+  - C-instruction `comp` (6 `c`'s) bits to `ALU` mappings
+    - where
+      - `ALU.x` = `DRegister.out`
+      - `ALU.y` = `ARegister.out` or `inM` (i.e., `RAM[A]`)
+    - matches up directly:
+      - `ALU.zx` = `instruction[11]`
+      - `ALU.nx` = `instruction[10]`
+      - `ALU.zy` = `instruction[9]`
+      - `ALU.ny` = `instruction[8]`
+      - `ALU.f` = `instruction[7]`
+      - `ALU.no` = `instruction[6]`
   - component chips:
     - `ALU(x= ,y= , zx= ,nx= ,zy= ,ny= ,f= ,no= ,out= ,zr= ,ng= )` (built-in)
       - IN:
@@ -387,7 +401,7 @@ sh HardwareSimulator.sh ../projects/1/Not.tst
               - 1st `d` bit (`instruction[5]`) is 1
               - other `d` bits don't matter
             - -> `And(instruction[15], instruction[5])
-          - = `Xor(Not(instruction[15]), And(instruction[15], instruction[5]))
+          - = `Xor(Not(instruction[15]), And(instruction[15], instruction[5]))`
       - OUT:
         - `out[16]`
     - `DRegister(in= ,load= ,out= )` (built-in)
