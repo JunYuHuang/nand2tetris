@@ -5,7 +5,7 @@
 Complete all HDL program implementations for all logic gates or chips in chapter 5:
 
 - [x] `Memory`
-- [ ] `CPU`
+- [x] `CPU`
 - [ ] `Computer`
 
 ## How To Test
@@ -259,9 +259,9 @@ sh HardwareSimulator.sh ../projects/1/Not.tst
       - are these 3 bits in the C-instruction binary:
         ```
         111accccccdddjjj
-                    ^ ^
-                    |_|
-                    jump 
+                     ^ ^
+                     |_|
+                     jump 
         ```
       - sets what do next:
         - 1 ) read + run the next instruction OR
@@ -373,50 +373,54 @@ sh HardwareSimulator.sh ../projects/1/Not.tst
         And(
           instruction[15],
           {jump bits + ALU.zr + ZLU.ng = 1 matching a jump cmd} OR'd w/ every
-          other jump bit mask evaluating to 1
+          other jump bit mask combo (3 `j` bits + ALU.zr + ALU.ng) evaluating to 1
         )
         `
-    - jump: `JGT`; if `comp` > 0 jump means:
-      - is C-instruction: `instruction[15]` = 1
-      - 3 `j` bits: 0 0 1
-        - -> `NOT(instruction[2]) AND NOT(instruction[1]) AND instruction[0]`
-      - `ALU.zr` = 0, `ALU.ng` = 0
-        - -> `NOT(ALU.zr) AND NOT(ALU.ng)`
-        - -> `NOT(ALU.zr OR ALU.ng)`
-      - `CPU.load` should equal 1
+      - decode combos of `ALU.zr` + `ALU.ng` + 3 `j` bits to set `PC.load` to 1
+      - if 1st `j` bit is 1 -> jump (option 2) if output < 0
+        - output < 0 if:
+          - `ALU.zr` = 0
+          - `ALU.ng` = 1
+          - -> `instruction[2] AND NOT(ALU.zr) AND ALU.ng`
+      - if 2nd `j` bit is 1 -> jump (option 2) if output = 0
+        - output = 0 if:
+          - `ALU.zr` = 1
+          - `ALU.ng` = 0
+          - -> `instruction[1] AND ALU.zr AND NOT(ALU.ng)`
+      - if 3rd `j` bit is 1 -> jump (option 2) if output > 0
+        - output > 0 if:
+          - `ALU.zr` = 0
+          - `ALU.ng` = 0
+          - -> `instruction[0] AND NOT(ALU.zr) AND NOT(ALU.ng)`
+          - -> `instruction[0] AND NOT(ALU.zr OR ALU.ng)`
+      - all 3 `j` bits are 1 -> always jump
+        - -> `instruction[0] AND instruction[1] AND instruction[2]`
       - ->
         `
         AND(
-          AND(AND(NOT(instruction[2]), NOT(instruction[1])), instruction[0]),
-          NOT(OR(ALU.zr, ALU.ng))
-        )
-        `
-    - jump: `JEQ`; if `comp` = 0 jump means:
-      - is C-instruction: `instruction[15]` = 1
-      - 3 `j` bits: 0 1 0
-        - -> `NOT(instruction[2]) AND instruction[1] AND NOT(instruction[0])`
-      - `ALU.zr` = 1, `ALU.ng` = 0
-        - -> `ALU.zr AND NOT(ALU.ng)`
-      - `CPU.load` should equal 1
-      - ->
-        `
-        AND(
-          AND(AND(NOT(instruction[2]), instruction[1]), NOT(instruction[0])),
-          AND(ALU.zr, NOT(ALU.ng))
-        )
-        `
-    - jump: `JGE`; if `comp` >= 0 jump means:
-      - is C-instruction: `instruction[15]` = 1
-      - 3 `j` bits: 0 1 1
-        - -> `NOT(instruction[2]) AND instruction[1] AND (instruction[0])`
-      - `ALU.zr` = 0 or 1, `ALU.ng` = 0
-        - -> `ALU.zr AND NOT(ALU.ng)`
-      - `CPU.load` should equal 1
-      - ->
-        `
-        AND(
-          AND(AND(NOT(instruction[2]), instruction[1]), NOT(instruction[0])),
-          AND(ALU.zr, NOT(ALU.ng))
+          instruction[15],
+          OR(
+            AND(
+              instruction[2],
+              AND(NOT(zr), ng)
+            ),
+            OR(
+              AND(
+                instruction[1],
+                AND(zr, NOT(ng))
+              ),
+              OR(
+                AND(
+                  instruction[0],
+                  NOT(OR(zr, ng))
+                ),
+                AND(
+                  instruction[0],
+                  AND(instruction[1], instruction[2])
+                )
+              )
+            )
+          )
         )
         `
   - component chips:

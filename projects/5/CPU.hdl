@@ -58,14 +58,37 @@ CHIP CPU {
 
     ALU(x=DRegOut, y=AOrM, zx=instruction[11], nx=instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6], out=ALUOut, out=outM, zr=zr, ng=ng);
 
-    // PC.load: TODO
-    // TODO
+    // PC.load: 1 if jump `jjj` bits represent a valid jump, else 0
+    // ALU.out (comp) < 0; 1st `j` is 1
+    And(a=instruction[2], b=LT0, out=JLT);
+    And(a=notZr, b=ng, out=LT0);
+    Not(in=zr, out=notZr);
 
-    // PC.inc: A-instruction or C-instruction w/ jump = null; no jump
+    // ALU.out (comp) = 0; 2nd `j` is 1
+    And(a=instruction[1], b=EQ0, out=JEQ);
+    And(a=zr, b=notNg, out=EQ0);
+    Not(in=ng, out=notNg);
+
+    // ALU.out (comp) > 0; 3rd `j` is 1
+    And(a=instruction[0], b=GT0, out=JGT);
+    Not(in=zrOrNg, out=GT0);
+    Or(a=zr, b=ng, out=zrOrNg);
+
+    // Unconditional jump; all `j` bits are 1
     And(a=instruction[0], b=instruction[1], out=j0AndJ1);
     And(a=j0AndJ1, b=instruction[2], out=j0AndJ1AndJ2);
-    Or(a=aInstruct, b=j0AndJ1AndJ2, out=incPC);
+
+    // Union of all valid `j` bit masks
+    And(a=instruction[15], b=cInstructJumps, out=loadPC);
+    Or(a=JLT, b=JEQOrJGTOrJMP, out=cInstructJumps);
+    Or(a=JEQ, b=JGTOrJMP, out=JEQOrJGTOrJMP);
+    Or(a=JGT, b=j0AndJ1AndJ2, out=JGTOrJMP);
+
+    // PC.inc: A-instruction or C-instruction w/ jump = null; no jump
+    Not(in=j0AndJ1AndJ2, out=cInstructNoJump);
+    Or(a=aInstruct, b=cInstructNoJump, out=incPC);
 
     // CPU.pc = PC.out
-    PC(in=ARegOut, reset=reset, inc=incPC, load=false, out[0..14]=pc);
+    // TODO: replace hardcoded `PC.load=false` placeholder value
+    PC(in=ARegOut, reset=reset, inc=incPC, load=loadPC, out[0..14]=pc);
 }
