@@ -6,7 +6,7 @@ Complete all HDL program implementations for all logic gates or chips in chapter
 
 - [x] `Memory`
 - [x] `CPU`
-- [ ] `Computer`
+- [x] `Computer`
 
 ## How To Test
 
@@ -486,9 +486,50 @@ sh HardwareSimulator.sh ../projects/1/Not.tst
 
 - `Computer` chip:
   ```
-  TODO
+  Chip Name: Computer
+  Input:     reset
+  Output:    N/A
+  Function:  When reset==0, the program stored in the computer executes.
+             When reset==1, the execution of the program restarts.
+             To start the program's execution, set reset to 1, and then to 0.
+             (It is assumed that the computer's instruction memory is loaded
+             with a program written in the Hack machine language).
+
+  * The Hack computer, consisting of CPU, ROM and RAM.
+  * When reset = 0, the program stored in the ROM executes.
+  * When reset = 1, the program's execution restarts. 
+  * Thus, to start running the currently loaded program,
+  * set reset to 1, and then set it to 0. 
+  * From this point onwards, the user is at the mercy of the software.
+  * Depending on the program's code, and whether the code is correct,
+  * the screen may show some output, the user may be expected to enter
+  * some input using the keyboard, or the program may do some processing. 
   ```
   - component chips:
-    - `ROM32K` (built-in)
-    - `CPU`
-    - `Memory`
+    - `ROM32K(address= ,out= )`
+      - IN:
+        - `address[15]`
+      - OUT:
+        - `out[16]`
+    - `CPU(inM= ,instruction= ,reset= ,outM= ,writeM= ,addressM= ,pc= )`
+      - IN:
+        - `inM[16]`
+        - `instruction[16]`
+        - `reset`
+      - OUT:
+        - `outM[16]`
+        - `writeM`
+        - `addressM[15]`
+        - `pc[15]`
+    - `Memory(in= ,load= ,address= ,out =)`
+      - IN:
+        - `in[16]`
+        - `load`
+        - `address[15]`
+      - OUT:
+        - `out[16]`
+  - just connect all the chips LOL
+  - run + pass these tests:
+    - [x] `ComputerAdd.tst`
+    - [x] `ComputerMax.tst`
+    - [x] `ComputerRect.tst`
