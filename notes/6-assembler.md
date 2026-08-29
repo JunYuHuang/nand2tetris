@@ -95,8 +95,61 @@ prompt > HackAssembler Prog.asm
 ```
     - `prompt` = shell terminal
     - `HackAssembler` = compiled binary executable program of assembler
-    - `Prog.asm` = Hack assembly program file
+    - `Prog.asm` = a Hack assembly program file
 
 ### 6.4.1 Developing a Basic Assembler
 
-- todo
+- assumes no symbolic refs
+- proposed software architecture:
+    ```
+    Parser module --+
+                    +-> Hack assembler
+    Code module ----+
+    ```
+- Parser module API:
+    ```
+    constructor(input_file) -> null (creates Parser object)
+    hasMoreLines()          -> boolean
+    advance()               -> null
+    instructionType()       -> {
+                                    A_INSTRUCTION,
+                                    C_INSTRUCTION,
+                                    L_INSTRUCTION 
+                               } (constants)
+    symbol()                -> string
+    comp()                  -> string
+    jump()                  -> string
+    ```
+- Code module API:
+    ```
+    dest(string) -> string (of 3 bits)
+    comp(string) -> string (of 7 bits)
+    jump(string) -> string (of 3 bits)
+    ```
+- Hack Assembler:
+    - input: `Prog.asm` assembly program file from command-line argument
+    - output: `Prog.hack` assembly program binary file
+        - creates / overwrites file in same directory as `Prog.asm`
+    - pseudocode:
+        - create output file `Prog.hack`
+        - for each line `line` string in `Prog.asm`:
+            - create empty string `outputLine`
+            - if `line` is C-instruction,
+                - get fields
+                - translates fields to their bit codes
+                - set `outputLine` to  16-digit bit char string
+            - else (if `line` is A-instruction),
+                - converts `xxx` into a 16-bit (`1` and `0` chars) string
+                - set `outputLine` to  16-digit bit char string
+            - append string to `Prog.hack`
+
+### 6.4.2 Completing the Assembler
+
+- Symbol Table API:
+    ```
+    constructor()                          -> new symbol table object 
+                                              (e.g., dictionary)
+    addEntry(symbol: string, address: int) -> adds key-value pair to table
+    contains(symbol: string)               -> boolean
+    getAddress(symbol: string)             -> int
+    ```
