@@ -51,18 +51,61 @@ HackAssembler ../rect/RectL.asm
     - Data Structures & Algorithms:
         - TODO
 
-- pseudocode:
-    - create output file `Prog.hack`
-        - for each line `line` string in `Prog.asm`:
-            - create empty string `outputLine`
-            - if `line` is C-instruction,
-                - get fields
-                - translates fields to their bit codes
-                - set `outputLine` to  16-digit bit char string
-            - else (if `line` is A-instruction),
-                - converts `xxx` into a 16-bit (`1` and `0` chars) string
-                - set `outputLine` to  16-digit bit char string
-            - append string to `Prog.hack`
+- pseudocode: basic assembler, no symbolic references
+    - if `assembly_file` doesn't exit,
+        - exit
+    - open the file `assembly_file`
+    - create output file `Prog.hack` in same directory as `assembly_file`
+    - while not at end of file in `assembly_file`:
+        - go to the current line `line`
+        - create empty string `outputLine`
+        - if `line` is C-instruction,
+            - get fields
+            - translates fields to their bit codes
+            - set `outputLine` to  16-digit bit char string
+        - else (if `line` is A-instruction),
+            - converts `xxx` into a 16-bit (`1` and `0` chars) string
+            - set `outputLine` to  16-digit bit char string
+        - append string to `Prog.hack`
+        - go to next line in `assembly_file`
+    - close file `assembly_file`
+    - close file `Prog.hack`
+
+- pseudocode: full assembler
+    - if `assembly_file` doesn't exit,
+        - exit
+    - open the file `assembly_file`
+    - create output file `Prog.hack` in same directory as `assembly_file`
+    - create empty hashmap `symbolToAddress`
+    - set `symbol_address` int to 16
+    - while not at end of file in `assembly_file`:
+        - if there is a symbol in the current line `line`,
+            - add key-value entry (`symbol`, `symbol_address`) to `symbolToAddress`
+            - increment `symbol_address` by 1
+        - go to next line
+    - move file pointer in `assembly_file` to start of file
+    - while not at end of file in `assembly_file`:
+        - go to the current line `line`
+        - create empty string `outputLine`
+        - if `line` is a comment, is an empty line of only whitespace chars,
+            - continue to next `line`
+        - else if `line` is C-instruction,
+            - get fields
+            - translates fields to their bit codes
+            - set `outputLine` to  16-digit bit char string
+        - else (if `line` is A-instruction),
+            - if `xxx` (from `@xxx`) is a symbol,
+                - if `xxx` is a key in `symbolToAddress`,   
+                    - replace it with its numeric value mapped to it in `symbolToAddress`
+                - else (`xxx` is a new symbol),
+                    - add key-value entry (`xxx`, `address`) to `symbolToAddress`
+                        - `address` =
+            - converts `xxx` into a 16-bit (`1` and `0` chars) string
+            - set `outputLine` to  16-digit bit char string
+        - append string to `Prog.hack`
+        - go to next line in `assembly_file`
+    - close file `assembly_file`
+    - close file `Prog.hack`
 
 - How to set up a Python 3.14 project with?
     - library test for writing unit / integration tests
