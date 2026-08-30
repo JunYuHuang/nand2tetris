@@ -1,0 +1,23 @@
+[project]
+name = "hack-assembler"
+version = "0.1.0"
+description = "Hack Assembler Python implementation for Nand2Tetris project 6"
+readme = "README.md"
+authors = [
+    { name = "Jun Huang", email = "1624698+JunYuHuang@users.noreply.github.com" }
+]
+requires-python = ">=3.13"
+dependencies = []
+
+[project.scripts]
+HackAssembler = "hackassembler:main"
+
+[build-system]
+requires = ["uv_build>=0.12.1,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pyinstaller>=6.22.2",
+    "pytest>=9.1.1",
+]

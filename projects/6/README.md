@@ -4,10 +4,11 @@
 
 Complete the following:
 
-- [ ] `Parser.py` (recommended but optional)
-- [ ] `Code.py` (recommended but optional)
-- [ ] `Symbol.py` (recommended but optional)
-- [ ] `HackAssembler.py` (required)
+- [ ] `parser.py` (recommended but optional)
+- [ ] `code.py` (recommended but optional)
+- [ ] `symbol.py` (recommended but optional)
+- [ ] `main.py` (required)
+- [ ] `HackAssembler` executable binary (required)
 
 ## How to Build
 
@@ -98,8 +99,7 @@ HackAssembler ../rect/RectL.asm
                 - if `xxx` is a key in `symbolToAddress`,   
                     - replace it with its numeric value mapped to it in `symbolToAddress`
                 - else (`xxx` is a new symbol),
-                    - add key-value entry (`xxx`, `address`) to `symbolToAddress`
-                        - `address` =
+                    - add key-value entry (`xxx`, `symbol_address`) to `symbolToAddress`
             - converts `xxx` into a 16-bit (`1` and `0` chars) string
             - set `outputLine` to  16-digit bit char string
         - append string to `Prog.hack`

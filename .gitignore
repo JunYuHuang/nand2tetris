@@ -1,0 +1,22 @@
+# Python virtual environment
+projects/6/HackAssembler/.venv/
+
+# Python cache
+projects/6/HackAssembler/__pycache__/
+projects/6/HackAssembler/**/__pycache__/
+
+# Pytest cache
+projects/6/HackAssembler/.pytest_cache/
+
+# PyInstaller
+projects/6/HackAssembler/build/
+projects/6/HackAssembler/dist/
+projects/6/HackAssembler/*.spec
+
+# Global Python ignores
+.venv/
+__pycache__/
+.pytest_cache/
+build/
+dist/
+*.spec
