@@ -15,8 +15,14 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 ## Test
 
 ```
-# In project root:
+# Go to project root:
+cd nand2tetris/projects/6/HackAssembler
+
+# Run all tests
 uv run pytest
+
+# Run a specific test
+uv run pytest tests/test_symbol_table.py
 ```
 
 ## Build

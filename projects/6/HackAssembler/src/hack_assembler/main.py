@@ -1,7 +1,5 @@
-print("Hello, World!")
-
-# test function
-def add(x: int, y: int) -> int:
+# Example
+def add(x: int, y: 3) -> int:
     return x + y
 
-print(f"add(2, 3) == {add(2, 3)}")
+# TODO

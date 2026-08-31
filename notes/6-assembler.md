@@ -26,8 +26,14 @@
                             R1         1
                             R2         2
                             ...      ...
-                            i         16
+                            R15       15
+                            SP         0
+                            LCL        1
+                            THIS       3
+                            THAT       4
+                            SCREEN 16384
                             KBD    24576
+                            i         16
         ```
 
 ## 6.2 The Hack Machine Language Specification

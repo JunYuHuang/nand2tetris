@@ -6,7 +6,7 @@ Complete the following:
 
 - [ ] `parser.py` (recommended but optional)
 - [ ] `code.py` (recommended but optional)
-- [ ] `symbol.py` (recommended but optional)
+- [x] `symbol_table.py` (recommended but optional)
 - [ ] `main.py` (required)
 - [ ] `HackAssembler` executable binary (required)
 
@@ -20,13 +20,17 @@ Run in a bash terminal:
 ```
 cd projects/6/HackAssembler
 chmod +x HackAssembler
+
+# Test assembly programs with no symbolic references
+HackAssembler ../max/MaxL.asm
+HackAssembler ../pong/PongL.asm
+HackAssembler ../rect/RectL.asm
+
+# Test assembly programs with symbolic references
 HackAssembler ../add/Add.asm
 HackAssembler ../max/Max.asm
-HackAssembler ../max/MaxL.asm
 HackAssembler ../pong/Pong.asm
-HackAssembler ../pong/PongL.asm
 HackAssembler ../rect/Rect.asm
-HackAssembler ../rect/RectL.asm
 ```
 
 ## Notes
