@@ -1,4 +1,6 @@
 import re
+import os
+import io
 
 #
 # Constants
@@ -11,6 +13,9 @@ INVALID_SYMBOL = "INVALID_SYMBOL"
 INVALID_DEST = "INVALID_DEST"
 INVALID_COMP = "INVALID_COMP"
 INVALID_JUMP = "INVALID_JUMP"
+INVALID_PATH = "INVALID_PATH"
+INVALID_DIR = "INVALID_DIR"
+INVALID_FILE = "INVALID_FILE"
 
 #
 # Helper functions
@@ -115,24 +120,67 @@ def get_jump(c_instruction: str) -> str:
         return ""
     return c_instruction[semicolon_pos + 1:]
 
+# TODO: to test
+def is_valid_symbolic_assembly_file_path(path: str) -> bool:
+    if len(path) < 5 or not os.path.exists(path):
+        return False
+    return path[-4:] == ".asm"
+
+# TODO: to test
+def symbolic_assembly_file_parent_dir(path: str) -> str:
+    if not is_valid_symbolic_assembly_file_path(path):
+        return INVALID_DIR
+    full_path = os.path.abspath(path)
+    last_sep_pos = full_path.rfind(os.sep)
+    return full_path[:last_sep_pos]
+
+# TODO: to test
+def symbolic_assembly_file(path: str) -> str:
+    if not is_valid_symbolic_assembly_file_path(path):
+        return INVALID_FILE
+    full_path = os.path.abspath(path)
+    last_sep_pos = full_path.rfind(os.sep)
+    return full_path[last_sep_pos + 1:]
+
 class Parser:
-    def __init__(self, assembly_file_path: str):
-        self.assembly_file_path
+    # TODO: to test
+    def __init__(self, symbolic_assembly_file_path: str):
+        self.symbolic_assembly_file_path = symbolic_assembly_file_path
+        self.fd = open(
+            symbolic_assembly_file_path, "r", encoding="utf-8"
+        )
+        self.fd_prev_pos = fd.tell()
+        self.fd_curr_pos = fd.tell()
+        self.fd_line = ""
 
     # TODO: to test
-    # - returns true if `assembly_file_path` has more lines
-    # - else returns false
+    def __del__(self):
+        self.symbolic_assembly_fd.close()
+    
+    # TODO: to test
     def has_more_lines(self) -> bool:
-        pass
+        if self.fd_prev_pos == 0 and self.fd_curr_pos == 0:
+            return True
+        return self.fd_prev_pos < self.fd_curr_pos
 
     # TODO: to test
     def advance(self) -> None:
-        pass
+        while has_more_lines() and not is_executable_line(self.fd_line):
+            self.fd_prev_pos = self.fd_curr_pos
+            self.fd_line = self.fd.readline()
+            self.fd_curr_pos = self.fd.tell()
 
     # TODO: to test
     # - returns A, C, or L instruction string constants
     def instruction_type(self) -> str:
-        pass
+        if is_a_instruction(self.fd_line):
+            return A_INSTRUCTION
+        elif is_c_instruction(self.fd_line):
+            return C_INSTRUCTION
+        elif is_l_instruction(self.fd_line):
+            return L_INSTRUCTION
+        else:
+            return INVALID_INSTRUCTION
 
     # TODO: to test
     def symbol(self) -> str:
