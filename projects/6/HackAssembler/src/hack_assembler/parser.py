@@ -184,12 +184,27 @@ class Parser:
 
     # TODO: to test
     def symbol(self) -> str:
-        pass
+        # e.g., `(LOOP)`
+        if is_l_instruction(self.fd_line):
+            return self.fd_line.replace(" ", "")[1:-1]
+        if not is_a_instruction(self.fd_line):
+            return INVALID_SYMBOL
+        return self.fd_line.replace(" ", "")[1:]
+
+    # TODO: to test
+    def dest(self) -> str:
+        if not is_c_instruction(self.fd_line):
+            return INVALID_DEST
+        return get_dest(self.fd_line)
 
     # TODO: to test
     def comp(self) -> str:
-        pass
+        if not is_c_instruction(self.fd_line):
+            return INVALID_DEST
+        return get_comp(self.fd_line)
 
     # TODO: to test
     def jump(self) -> str:
-        pass
+        if not is_c_instruction(self.fd_line):
+            return INVALID_DEST
+        return get_jump(self.fd_line)
