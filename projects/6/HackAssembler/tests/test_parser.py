@@ -14,6 +14,8 @@ def test_is_executable_line():
     assert is_executable_line("      ") == False
     assert is_executable_line("   // i am comment  ") == False
     assert is_executable_line("a") == True
+    assert is_executable_line("") == False
+    assert is_executable_line("\n") == False
 
 def test_is_a_instruction():
     assert is_a_instruction("a  ") == False
@@ -71,3 +73,34 @@ def test_get_jump():
     assert get_jump("M=1;JLE") == "JLE"
     assert get_jump("D|A") == ""
     assert get_jump("-A;JMP") == "JMP"
+
+def test_Parser_class_with_add():
+    parser = Parser("../add/Add.asm")
+
+    assert parser.has_more_lines() == True
+    
+    # Go to line 8: `@2`
+    parser.advance()
+    assert parser.fd_line == "@2"
+    assert parser.instruction_type() == A_INSTRUCTION
+    assert parser.symbol() == "2"
+    assert parser.dest() == INVALID_DEST
+    assert parser.comp() == INVALID_COMP
+    assert parser.jump() == INVALID_JUMP
+
+    # Go to line 11: `D=D+A`
+    parser.advance()
+    parser.advance()
+    parser.advance()
+    assert parser.fd_line == "D=D+A"
+    assert parser.instruction_type() == C_INSTRUCTION
+    assert parser.symbol() == INVALID_SYMBOL
+    assert parser.dest() == "D"
+    assert parser.comp() == "D+A"
+    assert parser.jump() == ""
+
+    # Go to line 14: ``
+    parser.advance()
+    parser.advance()
+    parser.advance()
+    assert parser.has_more_lines() == False

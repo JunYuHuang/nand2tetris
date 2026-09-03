@@ -27,7 +27,7 @@ def is_executable_line(text_line: str) -> bool:
     text_line = text_line.replace(" ", "")
     if len(text_line) == 0:
         return False
-    if text_line[:2] == "//":
+    if text_line == "\n" or text_line[:2] == "//":
         return False
     return True
 
@@ -120,13 +120,13 @@ def get_jump(c_instruction: str) -> str:
         return ""
     return c_instruction[semicolon_pos + 1:]
 
-# TODO: to test
+# TODO: to test + move to `main` module?
 def is_valid_symbolic_assembly_file_path(path: str) -> bool:
     if len(path) < 5 or not os.path.exists(path):
         return False
     return path[-4:] == ".asm"
 
-# TODO: to test
+# TODO: to test + move to `main` module?
 def symbolic_assembly_file_parent_dir(path: str) -> str:
     if not is_valid_symbolic_assembly_file_path(path):
         return INVALID_DIR
@@ -134,7 +134,7 @@ def symbolic_assembly_file_parent_dir(path: str) -> str:
     last_sep_pos = full_path.rfind(os.sep)
     return full_path[:last_sep_pos]
 
-# TODO: to test
+# TODO: to test + move to `main` module?
 def symbolic_assembly_file(path: str) -> str:
     if not is_valid_symbolic_assembly_file_path(path):
         return INVALID_FILE
@@ -149,13 +149,20 @@ class Parser:
         self.fd = open(
             symbolic_assembly_file_path, "r", encoding="utf-8"
         )
-        self.fd_prev_pos = fd.tell()
-        self.fd_curr_pos = fd.tell()
+        self.fd_prev_pos = self.fd.tell()
+        self.fd_curr_pos = self.fd.tell()
         self.fd_line = ""
 
     # TODO: to test
     def __del__(self):
-        self.symbolic_assembly_fd.close()
+        if self and self.fd:
+            self.fd.close()
+
+    # TODO: to test
+    def reset(self) -> None:
+        self.fd.seek(0)
+        self.fd_prev_pos = 0
+        self.fd_curr_pos = 0
     
     # TODO: to test
     def has_more_lines(self) -> bool:
@@ -165,10 +172,16 @@ class Parser:
 
     # TODO: to test
     def advance(self) -> None:
-        while has_more_lines() and not is_executable_line(self.fd_line):
+        while self.has_more_lines() and not is_executable_line(self.fd_line):
             self.fd_prev_pos = self.fd_curr_pos
-            self.fd_line = self.fd.readline()
+
+            # skip last newline `\n` char from the current text line
+            self.fd_line = self.fd.readline()[:-1]
+
             self.fd_curr_pos = self.fd.tell()
+            print(f"fd_prev_pos: {self.fd_prev_pos}")
+            print(f"fd_curr_pos: {self.fd_curr_pos}")
+            print(f"fd_line: '{self.fd_line}'")
 
     # TODO: to test
     # - returns A, C, or L instruction string constants
@@ -200,11 +213,11 @@ class Parser:
     # TODO: to test
     def comp(self) -> str:
         if not is_c_instruction(self.fd_line):
-            return INVALID_DEST
+            return INVALID_COMP
         return get_comp(self.fd_line)
 
     # TODO: to test
     def jump(self) -> str:
         if not is_c_instruction(self.fd_line):
-            return INVALID_DEST
+            return INVALID_JUMP
         return get_jump(self.fd_line)
