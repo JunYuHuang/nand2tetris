@@ -4,7 +4,7 @@
 
 Complete the following:
 
-- [ ] `parser.py` (recommended but optional)
+- [x] `parser.py` (recommended but optional)
 - [x] `code.py` (recommended but optional)
 - [x] `symbol_table.py` (recommended but optional)
 - [ ] `main.py` (required)

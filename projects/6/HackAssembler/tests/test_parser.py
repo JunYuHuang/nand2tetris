@@ -51,7 +51,7 @@ def test_is_l_instruction():
 def test_get_symbol():
     assert get_symbol(" @  ") == INVALID_SYMBOL
     assert get_symbol("  @ sum ") == "sum"
-    assert get_symbol("(LOOP)") == "LOOP"
+    assert get_symbol("   (LOOP) ") == "LOOP"
 
 def test_get_dest():
     assert get_dest(" @lol   ") == INVALID_DEST
@@ -104,3 +104,9 @@ def test_Parser_class_with_add():
     parser.advance()
     parser.advance()
     assert parser.has_more_lines() == False
+    assert parser.fd_line == ""
+
+    # Try to go out-of-bounds (line 15)
+    parser.advance()
+    assert parser.has_more_lines() == False
+    assert parser.fd_line == ""

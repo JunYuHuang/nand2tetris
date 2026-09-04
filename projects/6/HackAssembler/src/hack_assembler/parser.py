@@ -143,7 +143,6 @@ def symbolic_assembly_file(path: str) -> str:
     return full_path[last_sep_pos + 1:]
 
 class Parser:
-    # TODO: to test
     def __init__(self, symbolic_assembly_file_path: str):
         self.symbolic_assembly_file_path = symbolic_assembly_file_path
         self.fd = open(
@@ -153,25 +152,30 @@ class Parser:
         self.fd_curr_pos = self.fd.tell()
         self.fd_line = ""
 
-    # TODO: to test
     def __del__(self):
         if self and self.fd:
             self.fd.close()
 
-    # TODO: to test
     def reset(self) -> None:
         self.fd.seek(0)
         self.fd_prev_pos = 0
         self.fd_curr_pos = 0
     
-    # TODO: to test
     def has_more_lines(self) -> bool:
         if self.fd_prev_pos == 0 and self.fd_curr_pos == 0:
             return True
         return self.fd_prev_pos < self.fd_curr_pos
 
-    # TODO: to test
     def advance(self) -> None:
+        if self.has_more_lines() and is_executable_line(self.fd_line):
+            self.fd_prev_pos = self.fd_curr_pos
+
+            # skip last newline `\n` char from the current text line
+            self.fd_line = self.fd.readline()[:-1]
+
+            self.fd_curr_pos = self.fd.tell()
+            return
+
         while self.has_more_lines() and not is_executable_line(self.fd_line):
             self.fd_prev_pos = self.fd_curr_pos
 
@@ -179,23 +183,18 @@ class Parser:
             self.fd_line = self.fd.readline()[:-1]
 
             self.fd_curr_pos = self.fd.tell()
-            print(f"fd_prev_pos: {self.fd_prev_pos}")
-            print(f"fd_curr_pos: {self.fd_curr_pos}")
-            print(f"fd_line: '{self.fd_line}'")
 
-    # TODO: to test
-    # - returns A, C, or L instruction string constants
     def instruction_type(self) -> str:
         if is_a_instruction(self.fd_line):
             return A_INSTRUCTION
         elif is_c_instruction(self.fd_line):
             return C_INSTRUCTION
+        # TODO: untested in `test_parser.py`
         elif is_l_instruction(self.fd_line):
             return L_INSTRUCTION
         else:
             return INVALID_INSTRUCTION
 
-    # TODO: to test
     def symbol(self) -> str:
         # e.g., `(LOOP)`
         if is_l_instruction(self.fd_line):
@@ -204,19 +203,16 @@ class Parser:
             return INVALID_SYMBOL
         return self.fd_line.replace(" ", "")[1:]
 
-    # TODO: to test
     def dest(self) -> str:
         if not is_c_instruction(self.fd_line):
             return INVALID_DEST
         return get_dest(self.fd_line)
 
-    # TODO: to test
     def comp(self) -> str:
         if not is_c_instruction(self.fd_line):
             return INVALID_COMP
         return get_comp(self.fd_line)
 
-    # TODO: to test
     def jump(self) -> str:
         if not is_c_instruction(self.fd_line):
             return INVALID_JUMP
