@@ -1,5 +1,6 @@
-import parser
-from parser import Parser
+# TODO: fix broken imports when running test `uv run pytest tests/test_main.py`
+# import parser
+from parser import *
 import code
 from symbol_table import SymbolTable
 import sys
@@ -35,6 +36,7 @@ def symbolic_assembly_file(path: str) -> str:
     last_sep_pos = full_path.rfind(os.sep)
     return full_path[last_sep_pos + 1:]
 
+# TODO: to test
 # Copied and modified from `is_a_instruction()` function in `./parser.py`
 def is_symbol_constant(symbol: str) -> bool:
     return (
@@ -42,11 +44,6 @@ def is_symbol_constant(symbol: str) -> bool:
         (0 <= int(symbol) <= 32767) and
         symbol == str(int(symbol))
     )
-
-# TODO: to test
-def integer_to_binary(integer: int, bits_length: int = 15) -> str:
-    res = []
-    return ""
 
 # TODO: to test
 def main():
@@ -62,9 +59,9 @@ def main():
     output_file = None
 
     try:
-        my_parser = Parser(input_file_path)
+        my_parser = parser.Parser(input_file_path)
         output_file = open(output_path, "w", encoding="utf-8")
-        ouput_line = ""
+        output_line = ""
 
         # 1st pass thru input `.asm` file
         while my_parser.has_more_lines():
@@ -89,15 +86,16 @@ def main():
                 dest_bits = code.dest(my_parser.dest())
                 comp_bits = code.comp(my_parser.comp())
                 jump_bits = code.jump(my_parser.jump())
-
                 output_line = f"111{dest_bits}{comp_bits}{jump_bits}\n"
             elif my_parser.instruction_type() == A_INSTRUCTION:
                 symbol = my_parser.symbol()
                 if not is_symbol_constant(symbol):
                     symbol = symbol_to_address.get_address(symbol)
-                output_line = "1" + integer_to_binary(symbol)
+
+                # `format()` call converts integer constant as a 15-bit binary value
+                output_line = f"0{format(int(symbol), '015b')}\n"
             else:
-                output_line = ""
+                continue
             output_file.write(output_line)
     except Exception as err:
         sys.exit(f"[Error] Unexpected '{err}', {type(err)=}")
@@ -107,4 +105,4 @@ def main():
         if output_file:
             output_file.close()
 
-# main()
+main()
