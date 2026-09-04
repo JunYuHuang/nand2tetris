@@ -7,12 +7,11 @@ def test_dest():
     assert code.dest("") == "000"
     assert code.dest("AM") == "101"
 
-# TODO: to update b/c it's supposed to return a 7-char bit string
 def test_comp():
     assert code.comp("lmao") == INVALID_MNEMONIC_BINARY_CODE
-    assert code.comp("-1") == "111010"
-    assert code.comp("-A") == "110011"
-    assert code.comp("-M") == "110011"
+    assert code.comp("-1") == "0111010"
+    assert code.comp("-A") == "0110011"
+    assert code.comp("-M") == "1110011"
 
 def test_jump():
     assert code.jump("null") == INVALID_MNEMONIC_BINARY_CODE
