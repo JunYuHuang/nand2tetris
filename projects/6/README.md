@@ -85,6 +85,7 @@ HackAssembler ../rect/Rect.asm
     - set `symbol_address` int to 16
     - while not at end of file in `assembly_file`:
         - if there is a symbol in the current line `line`,
+            - means current line `line` is possibly an A-instruction or L-instruction
             - add key-value entry (`symbol`, `symbol_address`) to `symbolToAddress`
             - increment `symbol_address` by 1
         - go to next line

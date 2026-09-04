@@ -1,6 +1,4 @@
 import re
-import os
-import io
 
 #
 # Constants
@@ -13,14 +11,10 @@ INVALID_SYMBOL = "INVALID_SYMBOL"
 INVALID_DEST = "INVALID_DEST"
 INVALID_COMP = "INVALID_COMP"
 INVALID_JUMP = "INVALID_JUMP"
-INVALID_PATH = "INVALID_PATH"
-INVALID_DIR = "INVALID_DIR"
-INVALID_FILE = "INVALID_FILE"
 
 #
 # Helper functions
 #
-
 def is_executable_line(text_line: str) -> bool:
     if not isinstance(text_line, str):
         return False
@@ -119,28 +113,6 @@ def get_jump(c_instruction: str) -> str:
     if semicolon_pos == -1:
         return ""
     return c_instruction[semicolon_pos + 1:]
-
-# TODO: to test + move to `main` module?
-def is_valid_symbolic_assembly_file_path(path: str) -> bool:
-    if len(path) < 5 or not os.path.exists(path):
-        return False
-    return path[-4:] == ".asm"
-
-# TODO: to test + move to `main` module?
-def symbolic_assembly_file_parent_dir(path: str) -> str:
-    if not is_valid_symbolic_assembly_file_path(path):
-        return INVALID_DIR
-    full_path = os.path.abspath(path)
-    last_sep_pos = full_path.rfind(os.sep)
-    return full_path[:last_sep_pos]
-
-# TODO: to test + move to `main` module?
-def symbolic_assembly_file(path: str) -> str:
-    if not is_valid_symbolic_assembly_file_path(path):
-        return INVALID_FILE
-    full_path = os.path.abspath(path)
-    last_sep_pos = full_path.rfind(os.sep)
-    return full_path[last_sep_pos + 1:]
 
 class Parser:
     def __init__(self, symbolic_assembly_file_path: str):

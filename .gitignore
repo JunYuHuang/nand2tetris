@@ -20,3 +20,6 @@ __pycache__/
 build/
 dist/
 *.spec
+
+# Project 6 specific ignores
+projects/6/**/Add.hack
