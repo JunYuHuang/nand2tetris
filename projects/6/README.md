@@ -7,19 +7,28 @@ Complete the following:
 - [x] `parser.py` (recommended but optional)
 - [x] `code.py` (recommended but optional)
 - [x] `symbol_table.py` (recommended but optional)
-- [ ] `main.py` (required)
-- [ ] `HackAssembler` executable binary (required)
+- [x] `main.py` (required)
+- [x] `HackAssembler` executable binary (required)
+- [_] Verify it creates the correct `.hack` binary output files for these programs:
+    - [ ] `add/Add.asm`
+    - [ ] `max/MaxL.asm`
+    - [ ] `max/Max.asm`
+    - [ ] `pong/pongL.asm`
+    - [ ] `pong/Pong.asm`
+    - [ ] `rect/RectL.asm`
+    - [ ] `rect/Rect.asm`
+- [ ] Fix `HackAssembler` bugs
+    - [ ] Some text lines in output `.hack` files contain a dash `-` char as the 2nd char instead of a `1` or `0` bit char
 
 ## How to Build
 
-TODO: steps to create an executable program from the Python program
+See [HackAssembler README](./HackAssembler/README.md)
 
 ## How To Test
 
 Run in a bash terminal:
 ```
-cd projects/6/HackAssembler
-chmod +x HackAssembler
+cd projects/6/HackAssembler/dist
 
 # Test assembly programs with no symbolic references
 HackAssembler ../max/MaxL.asm

@@ -1,15 +1,55 @@
 # HackAssembler
 
-## Usage
-
-TODO
-
 ## Prereqs
 
 Install `astral-sh/uv`:
 ```
 # On macOS and Linux.
 curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+## Run Usage
+
+Run in Python:
+```
+# Go to project root:
+cd nand2tetris/projects/6/HackAssembler
+
+uv run src/hack_assembler/main.py {path_to_asm_file}
+
+# Example 1:
+uv run src/hack_assembler/main.py ../add/Add.asm
+
+# Example 2:
+uv run python -m hack_assembler.main ../add/Add.asm
+
+# Example 3:
+uv run HackAssembler ../add/Add.asm
+```
+
+Run as standalone executable binary:
+```
+# Go to `dist` folder in project root:
+cd nand2tetris/projects/6/HackAssembler/dist
+
+# Add execute permissions if needed:
+chmod +x HackAssembler
+
+# Example run:
+./HackAssembler ../../add/Add.asm
+```
+
+## Build
+
+```
+# Go to project root:
+cd nand2tetris/projects/6/HackAssembler
+
+# Optional clean-up:
+rm -rf build dist HackAssembler.spec
+
+# Required:
+uv run pyinstaller --clean --noconfirm --name HackAssembler --onefile src/hack_assembler/main.py
 ```
 
 ## Test
@@ -23,19 +63,4 @@ uv run pytest
 
 # Run a specific test
 uv run pytest tests/test_symbol_table.py
-```
-
-## Build
-
-```
-# Go to project root:
-cd nand2tetris/projects/6/HackAssembler
-
-# Option 1: for production
-uv run pyinstaller --name HackAssembler --onefile src/hack_assembler/main.py
-
-# Option 2: for dev work
-rm -rf build dist HackAssembler.spec
-
-uv run pyinstaller --clean --noconfirm --name HackAssembler --onefile src/hack_assembler/main.py
 ```

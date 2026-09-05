@@ -1,4 +1,9 @@
-from hack_assembler import main
+from hack_assembler.main import *
+
+"""
+To run this test correctly, modify `../src/hack_assembly/main.py`:
+- comment out `main()` function call
+"""
 
 def test_is_symbol_constant():
     assert is_symbol_constant("") == False

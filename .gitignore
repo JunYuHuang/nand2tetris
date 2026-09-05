@@ -22,4 +22,4 @@ dist/
 *.spec
 
 # Project 6 specific ignores
-projects/6/**/Add.hack
+projects/6/**/*.hack

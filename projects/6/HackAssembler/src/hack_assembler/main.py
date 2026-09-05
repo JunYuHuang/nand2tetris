@@ -1,10 +1,9 @@
-# TODO: fix broken imports when running test `uv run pytest tests/test_main.py`
-# import parser
-from parser import *
-import code
-from symbol_table import SymbolTable
+import hack_assembler.parser as parser
+import hack_assembler.code as code
+from hack_assembler.symbol_table import SymbolTable
 import sys
 import os
+import re
 
 #
 # Constants
@@ -13,6 +12,7 @@ INVALID_DIR = "INVALID_DIR"
 INVALID_FILE = "INVALID_FILE"
 A_INSTRUCTION = "A_INSTRUCTION"
 C_INSTRUCTION = "C_INSTRUCTION"
+L_INSTRUCTION = "L_INSTRUCTION"
 
 #
 # Helper functions
@@ -36,10 +36,9 @@ def symbolic_assembly_file(path: str) -> str:
     last_sep_pos = full_path.rfind(os.sep)
     return full_path[last_sep_pos + 1:]
 
-# TODO: to test
 # Copied and modified from `is_a_instruction()` function in `./parser.py`
 def is_symbol_constant(symbol: str) -> bool:
-    return (
+    return bool(
         re.compile(r'^\d+$').match(symbol) and
         (0 <= int(symbol) <= 32767) and
         symbol == str(int(symbol))
