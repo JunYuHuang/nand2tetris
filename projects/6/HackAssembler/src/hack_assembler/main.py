@@ -62,6 +62,7 @@ def main():
         output_file = open(output_path, "w", encoding="utf-8")
         output_line = ""
 
+        # TODO: to test
         # 1st pass thru input `.asm` file
         while my_parser.has_more_lines():
             my_parser.advance()
@@ -76,7 +77,8 @@ def main():
             if symbol_to_address.contains(symbol):
                 continue
             symbol_to_address.add_entry(symbol)
-            
+        
+        # TODO: to test
         # 2nd pass thru input `.asm` file
         my_parser.reset()
         while my_parser.has_more_lines():
@@ -85,12 +87,13 @@ def main():
                 dest_bits = code.dest(my_parser.dest())
                 comp_bits = code.comp(my_parser.comp())
                 jump_bits = code.jump(my_parser.jump())
-                output_line = f"111{dest_bits}{comp_bits}{jump_bits}\n"
+                output_line = f"111{comp_bits}{dest_bits}{jump_bits}\n"
             elif my_parser.instruction_type() == A_INSTRUCTION:
                 symbol = my_parser.symbol()
                 if not is_symbol_constant(symbol):
                     symbol = symbol_to_address.get_address(symbol)
 
+                # TODO: to fix
                 # `format()` call converts integer constant as a 15-bit binary value
                 output_line = f"0{format(int(symbol), '015b')}\n"
             else:

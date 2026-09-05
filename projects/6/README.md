@@ -10,15 +10,16 @@ Complete the following:
 - [x] `main.py` (required)
 - [x] `HackAssembler` executable binary (required)
 - [_] Verify it creates the correct `.hack` binary output files for these programs:
-    - [ ] `add/Add.asm`
-    - [ ] `max/MaxL.asm`
+    - [x] `add/Add.asm`
+    - [x] `max/MaxL.asm`
     - [ ] `max/Max.asm`
-    - [ ] `pong/pongL.asm`
+    - [ ] `pong/pongL.asm` (returns empty file??)
     - [ ] `pong/Pong.asm`
-    - [ ] `rect/RectL.asm`
+    - [ ] `rect/RectL.asm` (returns empty file??)
     - [ ] `rect/Rect.asm`
 - [ ] Fix `HackAssembler` bugs
     - [ ] Some text lines in output `.hack` files contain a dash `-` char as the 2nd char instead of a `1` or `0` bit char
+    - [x] Fix wrong output 16-char lengthed binary text lines from C-instructions
 
 ## How to Build
 
