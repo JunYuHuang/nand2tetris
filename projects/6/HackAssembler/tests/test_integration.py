@@ -91,7 +91,8 @@ def test_process_max_program():
             continue
         if symbol_table.contains(symbol):
             continue
-        symbol_table.add_entry(symbol, line_number)
+        line_number -= 1
+        symbol_table.add_entry(symbol, line_number + 1)
 
     assert symbol_table.contains("ITSR0") == True
     assert symbol_table.get_address("ITSR0") == 10
@@ -128,6 +129,4 @@ def test_process_max_program():
         symbol = symbol_table.get_address(symbol)
     assert symbol == 10
     output_line = f"0{format(int(symbol), '015b')}\n"
-
-    # TODO: fix failing assert
     assert output_line == "0000000000001010\n"
