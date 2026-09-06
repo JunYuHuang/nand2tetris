@@ -6,6 +6,7 @@ def test_dest():
     assert code.dest("lmao") == INVALID_MNEMONIC_BINARY_CODE
     assert code.dest("") == "000"
     assert code.dest("AM") == "101"
+    assert code.dest("MA") == "101"
 
 def test_comp():
     assert code.comp("lmao") == INVALID_MNEMONIC_BINARY_CODE
