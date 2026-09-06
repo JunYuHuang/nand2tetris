@@ -77,7 +77,7 @@ def main():
             if symbol_table.contains(symbol):
                 continue
             line_number -= 1
-            symbol_table.add_entry(symbol, line_number + 1)
+            symbol_table.add_entry(symbol, line_number + 1, False)
         
         # TODO: to test
         # 2nd pass input `.asm` file: add variable symbols to symbol table if needed

@@ -91,7 +91,7 @@ def test_process_max_program():
         if symbol_table.contains(symbol):
             continue
         line_number -= 1
-        symbol_table.add_entry(symbol, line_number + 1)
+        symbol_table.add_entry(symbol, line_number + 1, False)
 
     assert symbol_table.contains("ITSR0") == True
     assert symbol_table.get_address("ITSR0") == 10
@@ -128,3 +128,71 @@ def test_process_max_program():
     assert symbol == 10
     output_line = f"0{format(int(symbol), '015b')}\n"
     assert output_line == "0000000000001010\n"
+
+def test_process_rect_program():
+    my_parser = None
+    symbol_table = SymbolTable()
+    my_parser = parser.Parser("../rect/Rect.asm")
+    output_line = ""
+    line_number = -1
+
+    # 1st pass thru `.asm` file: add label symbols to symbol table if needed
+    while my_parser.has_more_lines():
+        my_parser.advance()
+        line_number += 1
+
+        if not my_parser.instruction_type() == L_INSTRUCTION:
+            continue
+        symbol = my_parser.symbol()
+        if is_symbol_constant(symbol):
+            continue
+        if symbol_table.contains(symbol):
+            continue
+        line_number -= 1
+        symbol_table.add_entry(symbol, line_number + 1, False)
+
+    # Predefined symbols should be untouched
+    assert symbol_table.get_address("R0") == 0
+    assert symbol_table.get_address("SCREEN") == 16384
+
+    # Variable symbols should not be in symbol table
+    assert symbol_table.contains("n") == False
+    assert symbol_table.contains("addr") == False
+
+    # Label symbols should be in symbol table
+    assert symbol_table.get_address("LOOP") == 10
+    assert symbol_table.get_address("END") == 23
+
+    # 2nd pass thru input `.asm` file
+    my_parser.reset()
+
+    # line 11: `   @R0`
+    my_parser.advance()
+    assert my_parser.fd_line == "   @R0"
+    assert my_parser.instruction_type() == A_INSTRUCTION
+    symbol = my_parser.symbol()
+    assert symbol == "R0"
+    if not is_symbol_constant(symbol):
+        if not symbol_table.contains(symbol):
+            symbol_table.add_entry(symbol)
+        symbol = symbol_table.get_address(symbol)
+    assert symbol == 0
+    output_line = f"0{format(int(symbol), '015b')}\n"
+    assert output_line == "0000000000000000\n"
+
+    # line 15: `   @n`
+    my_parser.advance()
+    my_parser.advance()
+    my_parser.advance()
+    my_parser.advance()
+    assert my_parser.fd_line == "   @n"
+    assert my_parser.instruction_type() == A_INSTRUCTION
+    symbol = my_parser.symbol()
+    assert symbol == "n"
+    if not is_symbol_constant(symbol):
+        if not symbol_table.contains(symbol):
+            symbol_table.add_entry(symbol)
+        symbol = symbol_table.get_address(symbol)
+    assert symbol == 16
+    output_line = f"0{format(int(symbol), '015b')}\n"
+    assert output_line == "0000000000010000\n"

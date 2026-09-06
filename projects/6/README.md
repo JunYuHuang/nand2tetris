@@ -13,14 +13,15 @@ Complete the following:
     - [x] `add/Add.asm`
     - [x] `max/MaxL.asm`
     - [x] `max/Max.asm`
-    - [ ] `pong/pongL.asm` (returns empty file??)
+    - [ ] `pong/PongL.asm` (never generated due to being stuck in infinite loop)
     - [ ] `pong/Pong.asm` (wrong `.hack` output file)
-    - [ ] `rect/RectL.asm` (returns empty file??)
-    - [ ] `rect/Rect.asm` (wrong `.hack` output file)
+    - [x] `rect/RectL.asm`
+    - [x] `rect/Rect.asm`
 - [ ] Fix `HackAssembler` bugs
     - [x] Some text lines in output `.hack` files contain a dash `-` char as the 2nd char instead of a `1` or `0` bit char
-    - [x] Fix wrong output 16-char lengthed binary text lines from C-instructions
-    - [x] Fix bug with `Parser.advance()` method
+    - [x] Wrong output 16-char lengthed binary text lines from C-instructions
+    - [x] Bug with `Parser.advance()` method
+    - [x] Bug with setting the wrong memory address (number) value associated with a variable symbol
 
 ## How to Build
 

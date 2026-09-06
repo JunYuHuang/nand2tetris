@@ -27,10 +27,13 @@ class SymbolTable:
         }
         self.next_variable_address = self.symbol_to_address["R15"] + 1
     
-    def add_entry(self, symbol: str, address: int | None = None) -> None:
+    def add_entry(
+        self, symbol: str, address: int | None = None, is_variable: bool = True
+    ) -> None:
         address = address if address else self.next_variable_address
         self.symbol_to_address[symbol] = address
-        self.next_variable_address += 1
+        if is_variable:
+            self.next_variable_address += 1
 
     def contains(self, symbol: str) -> bool:
         return symbol in self.symbol_to_address
