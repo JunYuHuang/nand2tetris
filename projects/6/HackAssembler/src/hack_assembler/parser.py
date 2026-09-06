@@ -120,13 +120,7 @@ class Parser:
         self.fd = open(
             symbolic_assembly_file_path, "r", encoding="utf-8"
         )
-        self.fd_last_pos = 0
-        self.fd_curr_pos = 0
         self.fd_line = ""
-        while self.fd.read() != "":
-            self.fd_last_pos = self.fd.tell()
-            self.fd.read()
-        self.fd.seek(0)
 
     def __del__(self):
         if self and self.fd:
@@ -134,21 +128,19 @@ class Parser:
 
     def reset(self) -> None:
         self.fd.seek(0)
-        self.fd_curr_pos = 0
+        self.fd_line = ""
     
     def has_more_lines(self) -> bool:
-        return self.fd_curr_pos < self.fd_last_pos
+        fd_old_pos = self.fd.tell()
+        next_line = self.fd.readline()
+        self.fd.seek(fd_old_pos)
+        return next_line != ""
 
-    # TODO: to fix
     def advance(self) -> None:
         while self.has_more_lines():
             self.fd_line = self.fd.readline()[:-1]   # skip last newline `\n` char
-            self.fd_curr_pos = self.fd.tell()
-
             if is_executable_line(self.fd_line):
-                # print(f"Line '{self.fd_line}' is executable")
                 return
-        # at last line; no more lines to move to
         self.fd_line = ""
 
     def instruction_type(self) -> str:

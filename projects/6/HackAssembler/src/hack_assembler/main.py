@@ -92,7 +92,6 @@ def main():
             elif my_parser.instruction_type() == A_INSTRUCTION:
                 symbol = my_parser.symbol()
                 if not is_symbol_constant(symbol):
-                    # TODO: add symbol variable to symbol symbol if doesn't exist
                     if not symbol_table.contains(symbol):
                         symbol_table.add_entry(symbol)
                     symbol = symbol_table.get_address(symbol)

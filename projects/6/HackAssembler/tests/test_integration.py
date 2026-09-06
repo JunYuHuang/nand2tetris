@@ -78,7 +78,6 @@ def test_process_max_program():
     output_line = ""
     line_number = -1
 
-    # TODO: to fix
     # 1st pass thru `.asm` file: add label symbols to symbol table if needed
     while my_parser.has_more_lines():
         my_parser.advance()
@@ -101,7 +100,6 @@ def test_process_max_program():
     assert symbol_table.contains("END") == True
     assert symbol_table.get_address("END") == 14
 
-    # TODO: to test
     # 2nd pass thru input `.asm` file
     my_parser.reset()
 
