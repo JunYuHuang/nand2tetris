@@ -1,5 +1,7 @@
 # Project 6
 
+See [HackAssembler README](./HackAssembler/README.md)
+
 ## Todos
 
 Complete the following:
@@ -9,15 +11,15 @@ Complete the following:
 - [x] `symbol_table.py` (recommended but optional)
 - [x] `main.py` (required)
 - [x] `HackAssembler` executable binary (required)
-- [_] Verify it creates the correct `.hack` binary output files for these programs:
+- [x] Verify it creates the correct `.hack` binary output files for these programs:
     - [x] `add/Add.asm`
     - [x] `max/MaxL.asm`
     - [x] `max/Max.asm`
-    - [ ] `pong/PongL.asm` (never generated due to being stuck in infinite loop)
-    - [ ] `pong/Pong.asm` (wrong `.hack` output file)
+    - [x] `pong/PongL.asm` (never generated due to being stuck in infinite loop)
+    - [x] `pong/Pong.asm` (wrong `.hack` output file)
     - [x] `rect/RectL.asm`
     - [x] `rect/Rect.asm`
-- [ ] Fix `HackAssembler` bugs
+- [x] Fix `HackAssembler` bugs
     - [x] Some text lines in output `.hack` files contain a dash `-` char as the 2nd char instead of a `1` or `0` bit char
     - [x] Wrong output 16-char lengthed binary text lines from C-instructions
     - [x] Bug with `Parser.advance()` method
@@ -27,22 +29,22 @@ Complete the following:
 
 See [HackAssembler README](./HackAssembler/README.md)
 
-## How To Test
+## How To Run
 
 Run in a bash terminal:
 ```
 cd projects/6/HackAssembler/dist
 
 # Test assembly programs with no symbolic references
-HackAssembler ../max/MaxL.asm
-HackAssembler ../pong/PongL.asm
-HackAssembler ../rect/RectL.asm
+./HackAssembler ../add/Add.asm
+./HackAssembler ../max/MaxL.asm
+./HackAssembler ../pong/PongL.asm
+./HackAssembler ../rect/RectL.asm
 
 # Test assembly programs with symbolic references
-HackAssembler ../add/Add.asm
-HackAssembler ../max/Max.asm
-HackAssembler ../pong/Pong.asm
-HackAssembler ../rect/Rect.asm
+./HackAssembler ../max/Max.asm
+./HackAssembler ../pong/Pong.asm
+./HackAssembler ../rect/Rect.asm
 ```
 
 ## Notes

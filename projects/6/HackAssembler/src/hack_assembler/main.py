@@ -44,7 +44,6 @@ def is_symbol_constant(symbol: str) -> bool:
         symbol == str(int(symbol))
     )
 
-# TODO: to test
 def main():
     if len(sys.argv) != 2:
         sys.exit("[Error] Missing input symbolic Hack assembly '.asm' file")
@@ -63,8 +62,7 @@ def main():
         output_line = ""
         line_number = -1
 
-        # TODO: to fix
-        # 1st pass thru `.asm` file: add label symbols to symbol table if needed
+        # 1st pass thru `.asm` file: add label symbols
         while my_parser.has_more_lines():
             my_parser.advance()
             line_number += 1
@@ -79,8 +77,7 @@ def main():
             line_number -= 1
             symbol_table.add_entry(symbol, line_number + 1, False)
         
-        # TODO: to test
-        # 2nd pass input `.asm` file: add variable symbols to symbol table if needed
+        # 2nd pass thru `.asm` file: add variable symbols if needed
         my_parser.reset()
         while my_parser.has_more_lines():
             my_parser.advance()

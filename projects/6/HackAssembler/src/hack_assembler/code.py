@@ -66,7 +66,6 @@ def dest(dest_mnemonic: str) -> str:
         return INVALID_MNEMONIC_BINARY_CODE
     return dest_to_binary[dest_mnemonic]
 
-# TODO: to update b/c it's supposed to return a 7-char bit string
 def comp(comp_mnemonic: str) -> str:
     if comp_mnemonic not in comp_to_binary:
         return INVALID_MNEMONIC_BINARY_CODE

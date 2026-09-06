@@ -2,7 +2,7 @@
 
 ## Prereqs
 
-Install `astral-sh/uv`:
+Install software package `astral-sh/uv`:
 ```
 # On macOS and Linux.
 curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -52,15 +52,18 @@ rm -rf build dist HackAssembler.spec
 uv run pyinstaller --clean --noconfirm --name HackAssembler --onefile src/hack_assembler/main.py
 ```
 
+Built executable lives at `./dist/HackAssembler`
+
 ## Test
 
 ```
 # Go to project root:
 cd nand2tetris/projects/6/HackAssembler
 
-# Run all tests
-uv run pytest
-
-# Run a specific test
+# Run tests
 uv run pytest tests/test_symbol_table.py
+uv run pytest tests/test_code.py
+uv run pytest tests/test_parser.py
+uv run pytest tests/test_integration.py
+uv run pytest tests/main.py
 ```
