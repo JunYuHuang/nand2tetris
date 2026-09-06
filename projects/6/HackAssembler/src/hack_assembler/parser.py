@@ -120,9 +120,13 @@ class Parser:
         self.fd = open(
             symbolic_assembly_file_path, "r", encoding="utf-8"
         )
-        self.fd_prev_pos = self.fd.tell()
-        self.fd_curr_pos = self.fd.tell()
+        self.fd_last_pos = 0
+        self.fd_curr_pos = 0
         self.fd_line = ""
+        while self.fd.read() != "":
+            self.fd_last_pos = self.fd.tell()
+            self.fd.read()
+        self.fd.seek(0)
 
     def __del__(self):
         if self and self.fd:
@@ -130,31 +134,22 @@ class Parser:
 
     def reset(self) -> None:
         self.fd.seek(0)
-        self.fd_prev_pos = 0
         self.fd_curr_pos = 0
     
     def has_more_lines(self) -> bool:
-        if self.fd_prev_pos == 0 and self.fd_curr_pos == 0:
-            return True
-        return self.fd_prev_pos < self.fd_curr_pos
+        return self.fd_curr_pos < self.fd_last_pos
 
+    # TODO: to fix
     def advance(self) -> None:
-        if self.has_more_lines() and is_executable_line(self.fd_line):
-            self.fd_prev_pos = self.fd_curr_pos
-
-            # skip last newline `\n` char from the current text line
-            self.fd_line = self.fd.readline()[:-1]
-
+        while self.has_more_lines():
+            self.fd_line = self.fd.readline()[:-1]   # skip last newline `\n` char
             self.fd_curr_pos = self.fd.tell()
-            return
 
-        while self.has_more_lines() and not is_executable_line(self.fd_line):
-            self.fd_prev_pos = self.fd_curr_pos
-
-            # skip last newline `\n` char from the current text line
-            self.fd_line = self.fd.readline()[:-1]
-
-            self.fd_curr_pos = self.fd.tell()
+            if is_executable_line(self.fd_line):
+                # print(f"Line '{self.fd_line}' is executable")
+                return
+        # at last line; no more lines to move to
+        self.fd_line = ""
 
     def instruction_type(self) -> str:
         if is_a_instruction(self.fd_line):

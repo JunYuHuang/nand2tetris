@@ -46,34 +46,88 @@ def is_symbol_constant(symbol: str) -> bool:
 
 def test_process_add_program():
     my_parser = None
-    symbol_to_address = SymbolTable()
+    symbol_table = SymbolTable()
+    my_parser = parser.Parser("../add/Add.asm")
+    output_line = ""
 
-    try:
-        my_parser = parser.Parser("../add/Add.asm")
-        output_line = ""
+    # line 8: `@2`
+    my_parser.advance()
+    assert my_parser.fd_line == "@2"
+    assert my_parser.instruction_type() == A_INSTRUCTION
+    symbol = my_parser.symbol()
+    output_line = f"0{format(int(symbol), '015b')}\n"
+    assert output_line == "0000000000000010\n"
 
-        # line 8: `@2`
+    # line 9: `D=A`
+    my_parser.advance()
+    assert my_parser.fd_line == "D=A"
+    assert my_parser.instruction_type() == C_INSTRUCTION
+    dest_bits = code.dest(my_parser.dest())
+    assert dest_bits == "010"
+    comp_bits = code.comp(my_parser.comp())
+    assert comp_bits == "0110000"
+    jump_bits = code.jump(my_parser.jump())
+    assert jump_bits == "000"
+    output_line = f"111{comp_bits}{dest_bits}{jump_bits}\n"
+    assert output_line == "1110110000010000\n"
+
+def test_process_max_program():
+    my_parser = None
+    symbol_table = SymbolTable()
+    my_parser = parser.Parser("../max/Max.asm")
+    output_line = ""
+    line_number = -1
+
+    # TODO: to fix
+    # 1st pass thru `.asm` file: add label symbols to symbol table if needed
+    while my_parser.has_more_lines():
         my_parser.advance()
-        assert my_parser.fd_line == "@2"
-        assert my_parser.instruction_type() == A_INSTRUCTION
+        line_number += 1
+
+        if not my_parser.instruction_type() == L_INSTRUCTION:
+            continue
         symbol = my_parser.symbol()
-        output_line = f"0{format(int(symbol), '015b')}\n"
-        assert output_line == "0000000000000010\n"
+        if is_symbol_constant(symbol):
+            continue
+        if symbol_table.contains(symbol):
+            continue
+        symbol_table.add_entry(symbol, line_number)
 
-        # line 9: `D=A`
-        my_parser.advance()
-        assert my_parser.fd_line == "D=A"
-        assert my_parser.instruction_type() == C_INSTRUCTION
-        dest_bits = code.dest(my_parser.dest())
-        assert dest_bits == "010"
-        comp_bits = code.comp(my_parser.comp())
-        assert comp_bits == "0110000"
-        jump_bits = code.jump(my_parser.jump())
-        assert jump_bits == "000"
-        output_line = f"111{comp_bits}{dest_bits}{jump_bits}\n"
-        assert output_line == "1110110000010000\n"
-    except Exception as err:
-        sys.exit(f"[Error] Unexpected '{err}', {type(err)=}")
-    finally:
-        if my_parser:
-            del my_parser
+    assert symbol_table.contains("ITSR0") == True
+    assert symbol_table.get_address("ITSR0") == 10
+    assert symbol_table.contains("OUTPUT_D") == True
+    assert symbol_table.get_address("OUTPUT_D") == 12
+    assert symbol_table.contains("END") == True
+    assert symbol_table.get_address("END") == 14
+
+    # TODO: to test
+    # 2nd pass thru input `.asm` file
+    my_parser.reset()
+
+    # line 10: `  @R0`
+    my_parser.advance()
+    assert my_parser.fd_line == "  @R0"
+    assert my_parser.instruction_type() == A_INSTRUCTION
+    symbol = my_parser.symbol()
+    assert symbol == "R0"
+    if not is_symbol_constant(symbol):
+        symbol = symbol_table.get_address(symbol)
+    output_line = f"0{format(int(symbol), '015b')}\n"
+    assert output_line == "0000000000000000\n"
+
+    # line 15: `  @ITSR0`
+    my_parser.advance()
+    my_parser.advance()
+    my_parser.advance()
+    my_parser.advance()
+    assert my_parser.fd_line == "  @ITSR0"
+    assert my_parser.instruction_type() == A_INSTRUCTION
+    symbol = my_parser.symbol()
+    assert symbol == "ITSR0"
+    if not is_symbol_constant(symbol):
+        symbol = symbol_table.get_address(symbol)
+    assert symbol == 10
+    output_line = f"0{format(int(symbol), '015b')}\n"
+
+    # TODO: fix failing assert
+    assert output_line == "0000000000001010\n"

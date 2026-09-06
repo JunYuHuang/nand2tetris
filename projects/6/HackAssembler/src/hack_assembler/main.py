@@ -52,7 +52,7 @@ def main():
     if not is_valid_symbolic_assembly_file_path(input_file_path):
         sys.exit(f"[Error] '{input_file_path}' is not a valid Hack assembly '.asm' file")
     my_parser = None
-    symbol_to_address = SymbolTable()
+    symbol_table = SymbolTable()
     output_dir = symbolic_assembly_file_parent_dir(input_file_path)
     output_path = f"{output_dir}{os.sep}{symbolic_assembly_file(input_file_path)[:-4]}.hack"
     output_file = None
@@ -61,25 +61,25 @@ def main():
         my_parser = parser.Parser(input_file_path)
         output_file = open(output_path, "w", encoding="utf-8")
         output_line = ""
+        line_number = -1
 
-        # TODO: to test
-        # 1st pass thru input `.asm` file
+        # TODO: to fix
+        # 1st pass thru `.asm` file: add label symbols to symbol table if needed
         while my_parser.has_more_lines():
             my_parser.advance()
-            if (
-                my_parser.instruction_type() != A_INSTRUCTION or
-                my_parser.instruction_type() != L_INSTRUCTION
-            ):
+            line_number += 1
+
+            if not my_parser.instruction_type() == L_INSTRUCTION:
                 continue
             symbol = my_parser.symbol()
             if is_symbol_constant(symbol):
                 continue
-            if symbol_to_address.contains(symbol):
+            if symbol_table.contains(symbol):
                 continue
-            symbol_to_address.add_entry(symbol)
+            symbol_table.add_entry(symbol, line_number)
         
         # TODO: to test
-        # 2nd pass thru input `.asm` file
+        # 2nd pass input `.asm` file: add variable symbols to symbol table if needed
         my_parser.reset()
         while my_parser.has_more_lines():
             my_parser.advance()
@@ -91,10 +91,10 @@ def main():
             elif my_parser.instruction_type() == A_INSTRUCTION:
                 symbol = my_parser.symbol()
                 if not is_symbol_constant(symbol):
-                    symbol = symbol_to_address.get_address(symbol)
-
-                # TODO: to fix
-                # `format()` call converts integer constant as a 15-bit binary value
+                    # TODO: add symbol variable to symbol symbol if doesn't exist
+                    if not symbol_table.contains(symbol):
+                        symbol_table.add_entry(symbol)
+                    symbol = symbol_table.get_address(symbol)
                 output_line = f"0{format(int(symbol), '015b')}\n"
             else:
                 continue

@@ -1,27 +1,27 @@
 from hack_assembler.symbol_table import SymbolTable
 
 def test_contains():
-    my_symbol_table = SymbolTable()
+    symbol_table = SymbolTable()
 
-    assert my_symbol_table.contains("lol") == False
-    assert my_symbol_table.contains("R5") == True
-    assert my_symbol_table.contains("KBD") == True
-    assert my_symbol_table.contains("kbd") == False
+    assert symbol_table.contains("lol") == False
+    assert symbol_table.contains("R5") == True
+    assert symbol_table.contains("KBD") == True
+    assert symbol_table.contains("kbd") == False
 
 def test_add_entry():
-    my_symbol_table = SymbolTable()
-    assert ("lol" in my_symbol_table.symbol_to_address) == False
+    symbol_table = SymbolTable()
+    assert ("lol" in symbol_table.symbol_to_address) == False
 
-    my_symbol_table.add_entry("lol", 30)
-    assert ("lol" in my_symbol_table.symbol_to_address) == True
+    symbol_table.add_entry("lol", 30)
+    assert ("lol" in symbol_table.symbol_to_address) == True
 
-    my_symbol_table.add_entry("var")
-    assert ("var" in my_symbol_table.symbol_to_address) == True
+    symbol_table.add_entry("var")
+    assert ("var" in symbol_table.symbol_to_address) == True
 
 def test_get_address():
-    my_symbol_table = SymbolTable()
-    assert my_symbol_table.get_address("not_here") == -1
-    assert my_symbol_table.get_address("R15") == 15
+    symbol_table = SymbolTable()
+    assert symbol_table.get_address("not_here") == -1
+    assert symbol_table.get_address("R15") == 15
 
-    my_symbol_table.add_entry("i")
-    assert my_symbol_table.get_address("i") == 16
+    symbol_table.add_entry("i")
+    assert symbol_table.get_address("i") == 16
