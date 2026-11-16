@@ -104,4 +104,6 @@ def main():
         if output_file:
             output_file.close()
 
-main()
+if __name__ == "__main__":
+    main()
+

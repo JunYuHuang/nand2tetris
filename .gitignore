@@ -23,3 +23,4 @@ dist/
 
 # Project 6 specific ignores
 projects/6/**/*.hack
+projects/6/**/.coverage
